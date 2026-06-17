@@ -436,20 +436,94 @@ canvas#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
     <input class="admin-pw-input" type="password" id="admin-pw-input" placeholder="••••" maxlength="6" onkeypress="if(event.key==='Enter')checkAdminPw()">
     <button class="btn-admin-login" onclick="checkAdminPw()">확인</button>
   </div>
-  <div class="admin-body" id="admin-body" style="display:none;"></div>
+  <div class="admin-body" id="admin-body" style="display:none;"><div class="admin-empty">⏳ 데이터 불러오는 중...</div></div>
 </div>
 
 <button class="btn-admin-link" onclick="openAdmin()" title="관리자">⚙</button>
 
+
+<!-- ===== 메모 모달 (견적안내/고객특징) ===== -->
+<div id="memo-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:440px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="background:var(--signature);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--accent);">
+      <div>
+        <div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:1px;margin-bottom:2px;">고객 메모</div>
+        <div id="memo-title" style="font-size:15px;font-weight:700;color:#fff;"></div>
+      </div>
+      <button onclick="closeMemoModal()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">×</button>
+    </div>
+    <div style="padding:20px;">
+      <div style="margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:700;color:var(--title);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span style="background:var(--accent);color:var(--signature);border-radius:4px;padding:2px 8px;font-size:11px;">1</span>
+          💰 견적 안내
+        </div>
+        <textarea id="memo-estimate" rows="4" placeholder="예) LX 뷰프레임 140 기준 창 3개 약 300만원 예상&#10;발코니 확장 추가 시 +50만원" style="width:100%;border:1px solid #E4E8F0;border-radius:10px;padding:12px;font-size:14px;font-family:inherit;resize:vertical;outline:none;line-height:1.6;"></textarea>
+      </div>
+      <div style="margin-bottom:20px;">
+        <div style="font-size:12px;font-weight:700;color:var(--title);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+          <span style="background:var(--sub-color);color:#fff;border-radius:4px;padding:2px 8px;font-size:11px;">2</span>
+          📝 고객 특징
+        </div>
+        <textarea id="memo-feature" rows="4" placeholder="예) 가격에 민감함. 아내가 결정권 있음.&#10;3월 이사 예정. 화이트 색상 선호." style="width:100%;border:1px solid #E4E8F0;border-radius:10px;padding:12px;font-size:14px;font-family:inherit;resize:vertical;outline:none;line-height:1.6;"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="closeMemoModal()" style="flex:1;padding:14px;border:1px solid #E4E8F0;border-radius:11px;background:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--sub-text);">취소</button>
+        <button onclick="submitMemo()" style="flex:2;padding:14px;border:none;border-radius:11px;background:var(--signature);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">☁️ 저장하기</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 
 <!-- html2canvas for image saving -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script>
 // PWA 서비스 워커 등록
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
+
+// ===================== Firebase 초기화 =====================
+const firebaseConfig = {
+  apiKey: "AIzaSyAMgM9c4BZQqK0dqjcuAhG8kCdnC9fzBKs",
+  authDomain: "asan-changho.firebaseapp.com",
+  projectId: "asan-changho",
+  storageBucket: "asan-changho.firebasestorage.app",
+  messagingSenderId: "1062362888467",
+  appId: "1:1062362888467:web:e49363875565b81dc9c2e6"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const COLLECTION = 'responses';
+
+// 연결 상태 표시
+let isOnline = navigator.onLine;
+window.addEventListener('online', ()=>{ isOnline=true; syncOfflineData(); showToast('🌐 온라인 연결됨'); });
+window.addEventListener('offline', ()=>{ isOnline=false; showToast('📵 오프라인 모드'); });
+
+function showToast(msg){
+  let t = document.getElementById('toast-msg');
+  if(!t){ t=document.createElement('div'); t.id='toast-msg'; t.style.cssText='position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:99px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:opacity 0.3s;white-space:nowrap;'; document.body.appendChild(t); }
+  t.textContent=msg; t.style.opacity='1';
+  setTimeout(()=>t.style.opacity='0', 2500);
+}
+
+// 오프라인 데이터 동기화
+async function syncOfflineData(){
+  try {
+    const offline = JSON.parse(localStorage.getItem('asan_offline_queue')||'[]');
+    if(!offline.length) return;
+    for(const entry of offline){
+      await db.collection(COLLECTION).doc(String(entry.id)).set(entry);
+    }
+    localStorage.removeItem('asan_offline_queue');
+    showToast('☁️ 오프라인 데이터 동기화 완료');
+  } catch(e){}
+}
+
 
 // ===================== 설정 =====================
 const ADMIN_PW = "7946";
@@ -1154,15 +1228,16 @@ function restoreAfterCapture(origHtml){
   }
 }
 
-// ===================== 저장 =====================
-function saveResponse(top3, ranks){
-  const responses = JSON.parse(localStorage.getItem('asan_responses')||'[]');
+// ===================== 저장 (Firebase + 오프라인 대비) =====================
+async function saveResponse(top3, ranks){
   const now = new Date();
   const entry = {
     id: Date.now(),
     date: now.toLocaleString('ko-KR'),
+    timestamp: now.getTime(),
     staff: currentStaff ? {name: currentStaff.name, code: currentStaff.code} : {name:'미상', code:'----'},
-    status: 'pending', // pending(고민중) | success(계약완료) | fail(계약실패)
+    status: 'pending',
+    memo: { estimate: '', feature: '' }, // 견적안내, 고객특징
     customer:{
       apt: infoData.apt||'',
       dong: infoData.dong||'',
@@ -1190,8 +1265,21 @@ function saveResponse(top3, ranks){
       rank: ranks[i]
     }))
   };
-  responses.unshift(entry);
-  localStorage.setItem('asan_responses', JSON.stringify(responses.slice(0,500)));
+
+  try {
+    if(isOnline){
+      await db.collection(COLLECTION).doc(String(entry.id)).set(entry);
+      showToast('☁️ 클라우드에 저장됨');
+    } else {
+      throw new Error('offline');
+    }
+  } catch(e){
+    // 오프라인 대비: 로컬에 임시 저장
+    const q = JSON.parse(localStorage.getItem('asan_offline_queue')||'[]');
+    q.unshift(entry);
+    localStorage.setItem('asan_offline_queue', JSON.stringify(q.slice(0,100)));
+    showToast('📵 오프라인 저장 (나중에 자동 동기화)');
+  }
 }
 
 // ===================== 관리자 =====================
@@ -1210,7 +1298,11 @@ function openAdmin(){
 
 function closeAdmin(){
   document.getElementById('admin-page').style.display='none';
+  // 리스너 해제 (불필요한 트래픽 방지)
+  if(adminUnsubscribe){ adminUnsubscribe(); adminUnsubscribe=null; }
 }
+
+// closeAdmin 위에 통합됨
 
 function checkAdminPw(){
   const pw = document.getElementById('admin-pw-input').value;
@@ -1224,7 +1316,9 @@ function checkAdminPw(){
   }
 }
 
-let adminFilter = 'all'; // all | success | fail | pending
+let adminFilter = 'all';
+let adminUnsubscribe = null; // Firestore 리스너 해제용
+let cachedResponses = []; // 실시간 캐시
 
 const STATUS_INFO = {
   pending: {label:'고민 중', emoji:'🤔', cls:'st-pending'},
@@ -1233,20 +1327,40 @@ const STATUS_INFO = {
 };
 
 function getVisibleResponses(){
-  let responses = JSON.parse(localStorage.getItem('asan_responses')||'[]');
-  // 영업사원이면 본인 코드 데이터만, 최고관리자(0000)면 전체
   if(currentStaff && !currentStaff.isMaster){
-    responses = responses.filter(r=> r.staff && r.staff.code === currentStaff.code);
+    return cachedResponses.filter(r=>r.staff && r.staff.code===currentStaff.code);
   }
-  return responses;
+  return cachedResponses;
 }
 
 function setAdminFilter(f){
   adminFilter = f;
-  renderAdmin();
+  renderAdminList();
+}
+
+// Firebase 실시간 리스너 시작
+function startRealtimeListener(){
+  if(adminUnsubscribe) adminUnsubscribe(); // 기존 리스너 해제
+  adminUnsubscribe = db.collection(COLLECTION)
+    .orderBy('timestamp','desc')
+    .onSnapshot(snapshot=>{
+      cachedResponses = snapshot.docs.map(d=>({id:d.id,...d.data()}));
+      // id를 숫자로 변환 (비교용)
+      cachedResponses = cachedResponses.map(r=>({...r, id: Number(r.id)||r.id}));
+      renderAdminList();
+    }, err=>{
+      console.error('Firestore 리스너 오류:', err);
+      showToast('⚠️ 데이터 로딩 오류');
+    });
 }
 
 function renderAdmin(){
+  // 실시간 리스너 시작
+  startRealtimeListener();
+  renderAdminList();
+}
+
+function renderAdminList(){
   let responses = getVisibleResponses();
   const body = document.getElementById('admin-body');
 
@@ -1293,7 +1407,7 @@ function renderAdmin(){
       <div class="response-card">
         <div class="response-top">
           <div>
-            <div class="response-name">${r.customer.apt} ${r.customer.dong}동 ${r.customer.ho}호</div>
+            <div class="response-name" style="cursor:pointer;text-decoration:underline dotted;" onclick="openMemoModal(${r.id})">${r.customer.apt} ${r.customer.dong}동 ${r.customer.ho}호 ✏️</div>
             <div style="font-size:10px;color:var(--sub-text);margin-top:2px;">담당: ${r.staff?r.staff.name:'미상'} (${r.staff?r.staff.code:'----'})</div>
           </div>
           <div style="text-align:right;">
@@ -1305,6 +1419,10 @@ function renderAdmin(){
           📞 <a href="tel:${r.customer.phone.replace(/[^0-9]/g,'')}" style="color:var(--signature);text-decoration:none;font-weight:700;border-bottom:1px solid var(--signature);">${r.customer.phone}</a> · ${r.answers.floor}<br>
           교체시기: <strong>${r.answers.timing}</strong> · 예산: ${r.answers.budget||'-'}
         </div>
+        ${r.memo&&(r.memo.estimate||r.memo.feature)?`<div style="background:#FFFBF0;border:1px solid #F5C135;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:12px;color:#5B4A00;">
+          ${r.memo.estimate?`<div>💰 <strong>견적:</strong> ${r.memo.estimate}</div>`:''}
+          ${r.memo.feature?`<div>📝 <strong>고객특징:</strong> ${r.memo.feature}</div>`:''}
+        </div>`:''}
         <div class="response-result">
           ${r.top3.map(t=>`<span class="r-badge r-badge-${t.rank||1}">${RANK_MEDAL[(t.rank||1)-1]} ${t.product} (${t.score}점)</span>`).join('')}
         </div>
@@ -1319,28 +1437,59 @@ function renderAdmin(){
   `;
 }
 
-function setStatus(id, status){
-  const responses = JSON.parse(localStorage.getItem('asan_responses')||'[]');
-  const idx = responses.findIndex(r=>r.id===id);
-  if(idx>=0){
-    responses[idx].status = status;
-    localStorage.setItem('asan_responses', JSON.stringify(responses));
+async function setStatus(id, status){
+  try {
+    await db.collection(COLLECTION).doc(String(id)).update({status});
     if(navigator.vibrate) navigator.vibrate(20);
-    renderAdmin();
-  }
+    // 실시간 리스너가 자동 갱신함
+  } catch(e){ showToast('⚠️ 저장 실패. 인터넷 확인 필요'); }
 }
 
-function deleteResponse(id){
+async function deleteResponse(id){
   if(!confirm('이 진단 내역을 삭제하시겠습니까?\n삭제된 내역은 복구할 수 없습니다.')) return;
-  let responses = JSON.parse(localStorage.getItem('asan_responses')||'[]');
-  responses = responses.filter(r=>r.id!==id);
-  localStorage.setItem('asan_responses', JSON.stringify(responses));
-  if(navigator.vibrate) navigator.vibrate(40);
-  renderAdmin();
+  try {
+    await db.collection(COLLECTION).doc(String(id)).delete();
+    if(navigator.vibrate) navigator.vibrate(40);
+    showToast('🗑 삭제 완료');
+  } catch(e){ showToast('⚠️ 삭제 실패. 인터넷 확인 필요'); }
+}
+
+// ===================== 견적/고객특징 메모 저장 =====================
+async function saveMemo(id, estimate, feature){
+  try {
+    await db.collection(COLLECTION).doc(String(id)).update({
+      'memo.estimate': estimate,
+      'memo.feature': feature
+    });
+    showToast('✅ 메모 저장됨');
+    closeMemoModal();
+  } catch(e){ showToast('⚠️ 저장 실패'); }
+}
+
+// ===================== 메모 모달 =====================
+let memoTargetId = null;
+function openMemoModal(id){
+  memoTargetId = id;
+  const r = cachedResponses.find(x=>Number(x.id)===Number(id)||x.id===String(id));
+  const memo = r && r.memo ? r.memo : {estimate:'', feature:''};
+  document.getElementById('memo-estimate').value = memo.estimate||'';
+  document.getElementById('memo-feature').value = memo.feature||'';
+  document.getElementById('memo-modal').style.display='flex';
+  document.getElementById('memo-title').textContent = r ? (r.customer.apt||'') + ' ' + (r.customer.dong||'') + '동 ' + (r.customer.ho||'') + '호' : '메모';
+}
+function closeMemoModal(){
+  document.getElementById('memo-modal').style.display='none';
+  memoTargetId = null;
+}
+function submitMemo(){
+  if(!memoTargetId) return;
+  const est = document.getElementById('memo-estimate').value;
+  const feat = document.getElementById('memo-feature').value;
+  saveMemo(memoTargetId, est, feat);
 }
 
 function exportCSV(){
-  const responses = getVisibleResponses();
+  const responses = getVisibleResponses(); // Firebase 실시간 캐시
   const statusKor = {success:'계약완료', fail:'계약실패', pending:'고민중'};
   const rows = [['날짜','담당사원','사원코드','계약상태','아파트명','동','호','연락처','층수','우리집특징','확장구조','자녀/반려동물','주요문제','그린리모델링','성향','선호브랜드','선호색상','프레임두께','최우선요소','업체선정기준','교체시기','1순위제품','1순위점수','2순위제품','2순위점수','3순위제품','3순위점수']];
   responses.forEach(r=>{
