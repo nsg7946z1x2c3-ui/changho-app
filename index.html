@@ -54,6 +54,15 @@ html,body{font-family:'LGE Smart',-apple-system,'Apple SD Gothic Neo','Noto Sans
 .intro-desc{font-size:14px;line-height:1.85;color:rgba(255,255,255,0.85);margin-bottom:38px;font-weight:400;position:relative;z-index:1;letter-spacing:-0.3px;}
 .btn-start{background:linear-gradient(135deg,var(--accent) 0%,#FFD66B 100%);color:var(--signature);border:none;border-radius:14px;padding:18px 36px;font-size:16px;font-weight:700;cursor:pointer;width:100%;max-width:340px;letter-spacing:-0.5px;box-shadow:0 10px 30px rgba(245,193,53,0.4);transition:all 0.15s;position:relative;z-index:1;font-family:inherit;}
 .btn-start:active{transform:translateY(2px);box-shadow:0 4px 14px rgba(245,193,53,0.5);}
+.ai-robot{width:130px;height:140px;margin:0 auto 30px;position:relative;z-index:1;animation:robotBounce 1.8s ease-in-out infinite;}
+.ai-robot svg{width:100%;height:100%;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.25));}
+@keyframes robotBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-14px);}}
+.ai-robot .eye{animation:robotBlink 3.2s ease-in-out infinite;transform-origin:center;}
+@keyframes robotBlink{0%,92%,100%{transform:scaleY(1);}96%{transform:scaleY(0.1);}}
+.ai-robot .arm-left{animation:armWaveL 1.8s ease-in-out infinite;transform-origin:36px 81px;}
+.ai-robot .arm-right{animation:armWaveR 1.8s ease-in-out infinite;transform-origin:84px 81px;}
+@keyframes armWaveL{0%,100%{transform:rotate(0deg);}50%{transform:rotate(-18deg);}}
+@keyframes armWaveR{0%,100%{transform:rotate(0deg);}50%{transform:rotate(18deg);}}
 
 /* ===== 브랜드 ===== */
 .intro-brands{padding:30px 24px 32px;background:var(--white);}
@@ -172,6 +181,7 @@ canvas#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 .share-section{padding:20px 16px 40px;background:var(--bg-light);}
 .btn-share{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:16px;background:#FEE500;color:#3C1E1E;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px;font-family:inherit;letter-spacing:-0.3px;}
 .btn-save-img{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:var(--signature);color:var(--white);border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px;font-family:inherit;}
+.btn-back-quiz{display:block;width:100%;padding:14px;background:var(--white);color:var(--signature);border:1.5px solid var(--signature);border-radius:12px;font-size:14px;cursor:pointer;font-family:inherit;text-align:center;font-weight:700;margin-bottom:8px;}
 .btn-retry{display:block;width:100%;padding:13px;background:transparent;color:var(--sub-text);border:1px solid var(--line);border-radius:12px;font-size:13px;cursor:pointer;font-family:inherit;text-align:center;font-weight:600;}
 
 /* 푸터 (상담 CTA) */
@@ -211,6 +221,31 @@ canvas#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 .admin-pw-input:focus{border-color:var(--signature);}
 .btn-admin-login{width:100%;max-width:280px;padding:13px;background:var(--signature);color:var(--white);border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:-0.3px;}
 .btn-export{background:var(--signature);color:var(--white);border:none;border-radius:8px;padding:9px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;}
+.admin-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.filter-btn{flex:1;min-width:0;padding:9px 6px;border:1px solid var(--line);border-radius:8px;background:var(--white);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--sub-text);white-space:nowrap;}
+.filter-btn.active{background:var(--signature);color:var(--white);border-color:var(--signature);}
+.btn-del{background:#FEF2F4;color:#C8102E;border:1px solid #F5C6CE;border-radius:6px;padding:4px 8px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;}
+.status-row{display:flex;align-items:center;gap:5px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line-light);flex-wrap:wrap;}
+.status-label{font-size:11px;color:var(--sub-text);font-weight:700;margin-right:2px;}
+.status-btn{flex:1;min-width:0;padding:7px 4px;border:1px solid var(--line);border-radius:7px;background:var(--white);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--sub-text);}
+.status-btn.st-success.on{background:#E6F5EF;color:#0E7C5A;border-color:#0E7C5A;}
+.status-btn.st-fail.on{background:#FDEAEC;color:#C8102E;border-color:#C8102E;}
+.status-btn.st-pending.on{background:#FBF3E3;color:#B8761C;border-color:#B8761C;}
+
+
+/* ===== 로그인 페이지 ===== */
+#login-page{background:linear-gradient(180deg,var(--signature) 0%,#022963 100%);min-height:calc(100vh - 60px);padding:30px 28px 40px;}
+.login-hero{text-align:center;margin-bottom:24px;}
+.login-robot{width:110px;height:120px;margin:0 auto 16px;}
+.login-title{font-family:'LGE Smart',sans-serif;font-size:24px;font-weight:700;color:var(--white);margin-bottom:8px;letter-spacing:-0.5px;}
+.login-sub{font-size:13px;color:rgba(255,255,255,0.8);}
+.login-form{max-width:340px;margin:0 auto;}
+.login-input{background:rgba(255,255,255,0.95)!important;border:none!important;font-size:16px!important;}
+.login-input:focus{box-shadow:0 0 0 3px rgba(245,193,53,0.5)!important;}
+.btn-login-main{width:100%;padding:16px;background:linear-gradient(135deg,var(--accent) 0%,#FFD66B 100%);color:var(--signature);border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;font-family:inherit;letter-spacing:-0.3px;box-shadow:0 8px 24px rgba(245,193,53,0.35);}
+.btn-login-main:active{transform:translateY(2px);}
+.login-hint{text-align:center;font-size:11px;color:rgba(255,255,255,0.6);margin-top:16px;line-height:1.6;}
+.staff-badge{position:fixed;top:70px;right:12px;background:rgba(245,193,53,0.95);color:var(--signature);font-size:11px;font-weight:700;padding:5px 12px;border-radius:99px;z-index:45;box-shadow:0 2px 8px rgba(0,0,0,0.2);display:none;}
 
 @media (max-width: 380px){
   .intro-hero h1{font-size:22px;}
@@ -230,13 +265,81 @@ canvas#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
   </div>
   <div class="header-cert">공식대리점</div>
 </div>
+<div class="staff-badge" id="staff-badge"></div>
+
+<!-- ===== 로그인 페이지 ===== -->
+<div id="login-page">
+  <div class="login-hero">
+    <div class="ai-robot login-robot">
+      <svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
+        <line x1="60" y1="22" x2="60" y2="8" stroke="#F5C135" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="60" cy="6" r="5" fill="#F5C135"/>
+        <rect x="28" y="20" width="64" height="50" rx="10" fill="#ffffff" stroke="#F5C135" stroke-width="2"/>
+        <line x1="60" y1="26" x2="60" y2="64" stroke="#D6E0F0" stroke-width="2"/>
+        <line x1="34" y1="45" x2="86" y2="45" stroke="#D6E0F0" stroke-width="2"/>
+        <circle class="eye" cx="47" cy="38" r="6" fill="#043F97"/>
+        <circle class="eye" cx="73" cy="38" r="6" fill="#043F97"/>
+        <circle cx="49" cy="36" r="2" fill="#ffffff"/>
+        <circle cx="75" cy="36" r="2" fill="#ffffff"/>
+        <circle cx="40" cy="52" r="4" fill="#F5C135" opacity="0.5"/>
+        <circle cx="80" cy="52" r="4" fill="#F5C135" opacity="0.5"/>
+        <path d="M52 54 Q60 60 68 54" stroke="#043F97" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <rect x="38" y="74" width="44" height="34" rx="9" fill="#ffffff" stroke="#F5C135" stroke-width="2"/>
+        <rect x="48" y="82" width="24" height="14" rx="3" fill="#5779AE" opacity="0.35"/>
+        <rect class="arm-left" x="22" y="78" width="14" height="6" rx="3" fill="#ffffff"/>
+        <rect class="arm-right" x="84" y="78" width="14" height="6" rx="3" fill="#ffffff"/>
+      </svg>
+    </div>
+    <h1 class="login-title">영업사원 로그인</h1>
+    <p class="login-sub">이름과 사원 코드를 입력해 주세요</p>
+  </div>
+  <div class="login-form">
+    <div class="info-field">
+      <div class="info-label" style="color:var(--white)">사원 이름</div>
+      <input class="info-input login-input" id="login-name" placeholder="예) 홍길동" autocomplete="off">
+    </div>
+    <div class="info-field">
+      <div class="info-label" style="color:var(--white)">사원 코드 ( 4자리 )</div>
+      <input class="info-input login-input" id="login-code" type="tel" inputmode="numeric" maxlength="4" placeholder="예) 0001" autocomplete="off" onkeypress="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-login-main" onclick="doLogin()">로그인</button>
+    <div class="login-hint">사원 코드는 0001 ~ 0030 입니다<br>최고관리자 코드는 별도 안내</div>
+  </div>
+</div>
 
 <!-- ===== 인트로 ===== -->
-<div id="intro-page">
+<div id="intro-page" style="display:none;">
   <div class="intro-hero">
     <div class="intro-badge">AI 맞춤 추천 진단</div>
     <h1>고객님의 취향과 예산에<br><span class="accent">딱 맞는 창호</span>를<br>AI가 추천해 드립니다</h1>
-    <p class="intro-desc">고객님의 환경과 취향을<br>정밀 분석하여 최적의 창호를 찾아드립니다</p>
+    <div class="ai-robot">
+      <svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg">
+        <!-- 안테나 -->
+        <line x1="60" y1="22" x2="60" y2="8" stroke="#F5C135" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="60" cy="6" r="5" fill="#F5C135"/>
+        <!-- 머리(창문 모티브) -->
+        <rect x="28" y="20" width="64" height="50" rx="10" fill="#ffffff" stroke="#F5C135" stroke-width="2"/>
+        <!-- 창틀 라인 (회사 로고 모티브) -->
+        <line x1="60" y1="26" x2="60" y2="64" stroke="#D6E0F0" stroke-width="2"/>
+        <line x1="34" y1="45" x2="86" y2="45" stroke="#D6E0F0" stroke-width="2"/>
+        <!-- 눈 -->
+        <circle class="eye" cx="47" cy="38" r="6" fill="#043F97"/>
+        <circle class="eye" cx="73" cy="38" r="6" fill="#043F97"/>
+        <circle cx="49" cy="36" r="2" fill="#ffffff"/>
+        <circle cx="75" cy="36" r="2" fill="#ffffff"/>
+        <!-- 볼 터치 -->
+        <circle cx="40" cy="52" r="4" fill="#F5C135" opacity="0.5"/>
+        <circle cx="80" cy="52" r="4" fill="#F5C135" opacity="0.5"/>
+        <!-- 입 (미소) -->
+        <path d="M52 54 Q60 60 68 54" stroke="#043F97" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- 몸통 -->
+        <rect x="38" y="74" width="44" height="34" rx="9" fill="#ffffff" stroke="#F5C135" stroke-width="2"/>
+        <rect x="48" y="82" width="24" height="14" rx="3" fill="#5779AE" opacity="0.35"/>
+        <!-- 팔 -->
+        <rect class="arm-left" x="22" y="78" width="14" height="6" rx="3" fill="#ffffff"/>
+        <rect class="arm-right" x="84" y="78" width="14" height="6" rx="3" fill="#ffffff"/>
+      </svg>
+    </div>
     <button class="btn-start" onclick="startQuiz()">진단 시작하기</button>
   </div>
 
@@ -310,9 +413,10 @@ canvas#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
       <span style="font-size:18px">💬</span> 카카오톡으로 결과 공유하기
     </button>
     <button class="btn-save-img" onclick="saveAsImage()">
-      <span style="font-size:16px">📷</span> 결과 이미지로 저장 & 복사
+      <span style="font-size:16px">📷</span> 결과 이미지로 저장하기
     </button>
-    <button class="btn-retry" onclick="restartQuiz()">↺ 다시 진단하기</button>
+    <button class="btn-back-quiz" onclick="backToQuiz()">← 설문으로 돌아가기 (답변 수정)</button>
+    <button class="btn-retry" onclick="restartQuiz()">↺ 처음부터 다시 진단하기</button>
   </div>
 </div>
 
@@ -320,7 +424,10 @@ canvas#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 <div class="admin-page" id="admin-page">
   <div class="admin-header">
     <div class="admin-title">📊 설문 결과 관리</div>
-    <button class="btn-admin-close" onclick="closeAdmin()">닫기</button>
+    <div style="display:flex;gap:6px;">
+      <button class="btn-admin-close" onclick="logout()" style="background:rgba(255,100,100,0.2);border-color:rgba(255,100,100,0.4);">로그아웃</button>
+      <button class="btn-admin-close" onclick="closeAdmin()">닫기</button>
+    </div>
   </div>
   <div class="admin-pw-wrap" id="admin-pw-wrap">
     <div class="admin-pw-icon">🔐</div>
@@ -337,15 +444,58 @@ canvas#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 </div>
 
 <!-- html2canvas for image saving -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
 // PWA 서비스 워커 등록
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
-</script>
-<script>
+
 // ===================== 설정 =====================
 const ADMIN_PW = "7946";
+
+// ===================== 영업사원 로그인 =====================
+const STAFF_MASTER_CODE = "0000"; // 최고관리자
+// 유효 코드: 0001~0030
+let currentStaff = null; // {name, code, isMaster}
+
+function isValidStaffCode(code){
+  if(code === STAFF_MASTER_CODE) return true;
+  const n = parseInt(code, 10);
+  return /^\d{4}$/.test(code) && n >= 1 && n <= 30;
+}
+
+function doLogin(){
+  const name = document.getElementById('login-name').value.trim();
+  const code = document.getElementById('login-code').value.trim();
+  if(!name){ alert('사원 이름을 입력해 주세요.'); return; }
+  if(!isValidStaffCode(code)){
+    alert('올바른 사원 코드가 아닙니다.\n( 0001 ~ 0030 또는 관리자 코드 )');
+    return;
+  }
+  currentStaff = { name: name, code: code, isMaster: (code === STAFF_MASTER_CODE) };
+  // 화면 전환
+  document.getElementById('login-page').style.display = 'none';
+  document.getElementById('intro-page').style.display = 'block';
+  // 사원 배지 표시
+  const badge = document.getElementById('staff-badge');
+  badge.textContent = currentStaff.isMaster ? '👑 ' + name + ' (관리자)' : '👤 ' + name + ' (' + code + ')';
+  badge.style.display = 'block';
+  if(navigator.vibrate) navigator.vibrate(30);
+  soundTransition();
+}
+
+function logout(){
+  currentStaff = null;
+  document.getElementById('staff-badge').style.display = 'none';
+  document.getElementById('intro-page').style.display = 'none';
+  document.getElementById('result-page').style.display = 'none';
+  document.getElementById('quiz-page').style.display = 'none';
+  document.getElementById('login-page').style.display = 'block';
+  document.getElementById('login-name').value = '';
+  document.getElementById('login-code').value = '';
+}
+
 
 const SECTIONS = ["기본 정보","기본 정보","기본 정보","기본 정보","기본 정보","현재 창호 문제점","취향과 예산","취향과 예산","취향과 예산","취향과 예산","취향과 예산","취향과 예산","취향과 예산","취향과 예산"];
 
@@ -361,8 +511,8 @@ const QUESTIONS = [
   },
   {type:"single", num:"질문 2", text:"현재 몇 층에 거주하시나요?", sub:"",
     options:["저층 (1~5층)","중층 (6~14층)","고층 (15~25층)","초고층 (26층 이상)"], scoreKey:"floor"},
-  {type:"multi", num:"질문 3", text:"거주 지역의 기후 특징은 어떠한가요?", sub:"복수 선택 가능",
-    options:["대로변","해안가","고지대","일반 주택가"], scoreKey:"climate"},
+  {type:"multi", num:"질문 3", text:"우리집의 특징은 어떤가요?", sub:"복수 선택 가능",
+    options:["해당 없음","대로변","해안가","고지대","일반 주택가"], scoreKey:"climate"},
   {type:"multi", num:"질문 4", text:"확장형 구조인가요?", sub:"복수 선택 가능",
     options:["해당 없음","거실 확장","작은방 확장","주방 확장"], scoreKey:null},
   {type:"single", num:"질문 5", text:"어린 자녀나 반려동물이 함께 거주하시나요?", sub:"",
@@ -750,7 +900,7 @@ function showResult(){
 
   const nameStr = infoData.apt ? `${infoData.apt} ${infoData.dong}동 ${infoData.ho}호` : '고객님';
   document.getElementById('result-name').textContent = nameStr + ' 고객님';
-  document.getElementById('result-summary').textContent = '14개 문항 분석 결과 · 100점 만점 평균 점수';
+  document.getElementById('result-summary').textContent = '';
 
   document.getElementById('result-info-display').innerHTML = `
     <div class="info-display">
@@ -904,18 +1054,25 @@ function fallbackCopy(text){
   }
 }
 
-// ===================== 이미지로 저장 =====================
+// ===================== 이미지로 저장 (모바일 갤러리) =====================
+let _saveBtnRef = null;
 async function saveAsImage(){
   if(navigator.vibrate) navigator.vibrate(30);
   const btn = event.currentTarget;
+  _saveBtnRef = btn;
   const orig = btn.innerHTML;
   btn.innerHTML = '<span>⏳ 이미지 생성 중...</span>';
   btn.disabled = true;
 
-  // 공유 버튼 영역은 캡처에서 제외
   const shareSection = document.getElementById('share-section');
-  const headerEl = document.getElementById('app-header');
+  const adminBtn = document.querySelector('.btn-admin-link');
+  const staffBadge = document.getElementById('staff-badge');
   shareSection.style.display = 'none';
+  if(adminBtn) adminBtn.style.display = 'none';
+  if(staffBadge) staffBadge.style.display = 'none';
+
+  // 렌더 안정화를 위해 약간 대기
+  await new Promise(r=>setTimeout(r, 100));
 
   try {
     const target = document.getElementById('capture-root');
@@ -924,53 +1081,76 @@ async function saveAsImage(){
       backgroundColor: '#ffffff',
       logging: false,
       useCORS: true,
+      scrollX: 0,
+      scrollY: -window.scrollY,
+      windowWidth: target.scrollWidth,
+      windowHeight: target.scrollHeight,
       onclone: function(clonedDoc){
-        // 클론된 문서에서 폭죽 캔버스 제거
         const cc = clonedDoc.getElementById('confetti-canvas');
         if(cc) cc.style.display = 'none';
       }
     });
 
+    const fname = `아산창호시스템_추천결과_${infoData.apt||'고객'}.png`;
+
     canvas.toBlob(async (blob)=>{
-      // 1. 다운로드
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      const fname = `아산창호시스템_추천결과_${infoData.apt||'고객'}.png`;
-      a.href = url;
-      a.download = fname;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      const file = new File([blob], fname, {type:'image/png'});
 
-      // 2. 클립보드 복사 시도
-      let copyOk = false;
-      try {
-        if(navigator.clipboard && window.ClipboardItem){
-          await navigator.clipboard.write([
-            new ClipboardItem({'image/png': blob})
-          ]);
-          copyOk = true;
+      // 1순위: 모바일 파일 공유 (갤러리/사진 앱 저장 가능)
+      let shared = false;
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        try {
+          await navigator.share({
+            files:[file],
+            title:'아산창호시스템 추천 결과'
+          });
+          shared = true;
+        } catch(e){
+          // 사용자가 취소한 경우 등
+          if(e && e.name === 'AbortError') shared = true;
         }
-      } catch(e){ copyOk = false; }
-
-      URL.revokeObjectURL(url);
-      shareSection.style.display = 'block';
-      btn.innerHTML = orig;
-      btn.disabled = false;
-
-      if(copyOk){
-        alert('✅ 이미지가 저장되고 클립보드에 복사되었습니다!\n카카오톡 채팅창에 붙여넣기(Ctrl+V) 하시면 됩니다.');
-      } else {
-        alert('✅ 이미지가 저장되었습니다!\n📁 다운로드 폴더를 확인하세요.\n\n(클립보드 복사는 지원되지 않는 브라우저입니다)');
       }
+
+      // 2순위: 다운로드 (PC 또는 공유 미지원)
+      if(!shared){
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fname;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        // 클립보드 복사도 시도 (PC)
+        try {
+          if(navigator.clipboard && window.ClipboardItem){
+            await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
+          }
+        } catch(e){}
+        alert('✅ 이미지가 저장되었습니다!\n📁 다운로드 폴더(또는 사진 앱)를 확인하세요.');
+      }
+
+      restoreAfterCapture(orig);
     }, 'image/png');
 
   } catch(e){
     console.error(e);
-    shareSection.style.display = 'block';
-    btn.innerHTML = orig;
-    btn.disabled = false;
+    restoreAfterCapture(orig);
     alert('이미지 생성 중 오류가 발생했습니다.\n다시 시도해 주세요.');
+  }
+}
+
+function restoreAfterCapture(origHtml){
+  const shareSection = document.getElementById('share-section');
+  const adminBtn = document.querySelector('.btn-admin-link');
+  const staffBadge = document.getElementById('staff-badge');
+  shareSection.style.display = 'block';
+  if(adminBtn) adminBtn.style.display = 'flex';
+  if(staffBadge && currentStaff) staffBadge.style.display = 'block';
+  if(_saveBtnRef){
+    _saveBtnRef.innerHTML = origHtml;
+    _saveBtnRef.disabled = false;
+    _saveBtnRef = null;
   }
 }
 
@@ -981,6 +1161,8 @@ function saveResponse(top3, ranks){
   const entry = {
     id: Date.now(),
     date: now.toLocaleString('ko-KR'),
+    staff: currentStaff ? {name: currentStaff.name, code: currentStaff.code} : {name:'미상', code:'----'},
+    status: 'pending', // pending(고민중) | success(계약완료) | fail(계약실패)
     customer:{
       apt: infoData.apt||'',
       dong: infoData.dong||'',
@@ -1014,10 +1196,15 @@ function saveResponse(top3, ranks){
 
 // ===================== 관리자 =====================
 function openAdmin(){
+  if(!currentStaff){
+    alert('먼저 영업사원 로그인이 필요합니다.');
+    return;
+  }
   document.getElementById('admin-page').style.display='block';
   document.getElementById('admin-body').style.display='none';
   document.getElementById('admin-pw-wrap').style.display='block';
   document.getElementById('admin-pw-input').value='';
+  adminFilter='all';
   setTimeout(()=>document.getElementById('admin-pw-input').focus(),100);
 }
 
@@ -1037,33 +1224,82 @@ function checkAdminPw(){
   }
 }
 
+let adminFilter = 'all'; // all | success | fail | pending
+
+const STATUS_INFO = {
+  pending: {label:'고민 중', emoji:'🤔', cls:'st-pending'},
+  success: {label:'계약완료', emoji:'✅', cls:'st-success'},
+  fail:    {label:'계약실패', emoji:'❌', cls:'st-fail'}
+};
+
+function getVisibleResponses(){
+  let responses = JSON.parse(localStorage.getItem('asan_responses')||'[]');
+  // 영업사원이면 본인 코드 데이터만, 최고관리자(0000)면 전체
+  if(currentStaff && !currentStaff.isMaster){
+    responses = responses.filter(r=> r.staff && r.staff.code === currentStaff.code);
+  }
+  return responses;
+}
+
+function setAdminFilter(f){
+  adminFilter = f;
+  renderAdmin();
+}
+
 function renderAdmin(){
-  const responses = JSON.parse(localStorage.getItem('asan_responses')||'[]');
+  let responses = getVisibleResponses();
   const body = document.getElementById('admin-body');
-  if(!responses.length){
-    body.innerHTML = '<div class="admin-empty">아직 설문 결과가 없습니다</div>';
+
+  const total = responses.length;
+  const cntSuccess = responses.filter(r=>r.status==='success').length;
+  const cntFail = responses.filter(r=>r.status==='fail').length;
+  const cntPending = responses.filter(r=>!r.status || r.status==='pending').length;
+
+  // 필터 적용
+  let filtered = responses;
+  if(adminFilter!=='all'){
+    filtered = responses.filter(r=>(r.status||'pending')===adminFilter);
+  }
+
+  const scopeLabel = (currentStaff && !currentStaff.isMaster)
+    ? `${currentStaff.name} 사원님 (${currentStaff.code})`
+    : '전체 (최고관리자)';
+
+  if(!total){
+    body.innerHTML = `<div style="font-size:11px;color:var(--sub-text);text-align:center;margin-bottom:12px;">${scopeLabel}</div><div class="admin-empty">아직 설문 결과가 없습니다</div>`;
     return;
   }
-  const today = responses.filter(r=>{
-    const d = new Date(r.id);
-    const n = new Date();
-    return n.toDateString()===d.toDateString();
-  }).length;
 
   body.innerHTML = `
-    <div class="admin-stats">
-      <div class="stat-box"><div class="stat-num">${responses.length}</div><div class="stat-label">총 진단 수</div></div>
-      <div class="stat-box"><div class="stat-num">${today}</div><div class="stat-label">오늘 진단</div></div>
+    <div style="font-size:11px;color:var(--sub-text);text-align:center;margin-bottom:12px;font-weight:600;">📋 ${scopeLabel} 데이터</div>
+    <div class="admin-stats" style="grid-template-columns:1fr 1fr 1fr 1fr;">
+      <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-label">전체</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:#0E7C5A;">${cntSuccess}</div><div class="stat-label">계약완료</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:#C8102E;">${cntFail}</div><div class="stat-label">계약실패</div></div>
+      <div class="stat-box"><div class="stat-num" style="color:#B8761C;">${cntPending}</div><div class="stat-label">고민 중</div></div>
     </div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-      <div style="font-size:12px;color:var(--sub-text);font-weight:700;">최근 진단 내역</div>
+    <div class="admin-filter">
+      <button class="filter-btn ${adminFilter==='all'?'active':''}" onclick="setAdminFilter('all')">전체 ${total}</button>
+      <button class="filter-btn ${adminFilter==='success'?'active':''}" onclick="setAdminFilter('success')">✅ 계약완료 ${cntSuccess}</button>
+      <button class="filter-btn ${adminFilter==='fail'?'active':''}" onclick="setAdminFilter('fail')">❌ 계약실패 ${cntFail}</button>
+      <button class="filter-btn ${adminFilter==='pending'?'active':''}" onclick="setAdminFilter('pending')">🤔 고민 중 ${cntPending}</button>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px;">
       <button class="btn-export" onclick="exportCSV()">📥 엑셀 다운로드</button>
     </div>
-    ${responses.map(r=>`
+    ${filtered.length===0 ? '<div class="admin-empty">해당 상태의 내역이 없습니다</div>' : filtered.map(r=>{
+      const st = STATUS_INFO[r.status||'pending'];
+      return `
       <div class="response-card">
         <div class="response-top">
-          <div class="response-name">${r.customer.apt} ${r.customer.dong}동 ${r.customer.ho}호</div>
-          <div class="response-date">${r.date}</div>
+          <div>
+            <div class="response-name">${r.customer.apt} ${r.customer.dong}동 ${r.customer.ho}호</div>
+            <div style="font-size:10px;color:var(--sub-text);margin-top:2px;">담당: ${r.staff?r.staff.name:'미상'} (${r.staff?r.staff.code:'----'})</div>
+          </div>
+          <div style="text-align:right;">
+            <div class="response-date">${r.date}</div>
+            <button class="btn-del" onclick="deleteResponse(${r.id})">🗑 삭제</button>
+          </div>
         </div>
         <div class="response-detail">
           📞 <a href="tel:${r.customer.phone.replace(/[^0-9]/g,'')}" style="color:var(--signature);text-decoration:none;font-weight:700;border-bottom:1px solid var(--signature);">${r.customer.phone}</a> · ${r.answers.floor}<br>
@@ -1072,17 +1308,45 @@ function renderAdmin(){
         <div class="response-result">
           ${r.top3.map(t=>`<span class="r-badge r-badge-${t.rank||1}">${RANK_MEDAL[(t.rank||1)-1]} ${t.product} (${t.score}점)</span>`).join('')}
         </div>
+        <div class="status-row">
+          <span class="status-label">계약 상태:</span>
+          <button class="status-btn st-success ${(r.status||'pending')==='success'?'on':''}" onclick="setStatus(${r.id},'success')">✅ 계약완료</button>
+          <button class="status-btn st-fail ${(r.status||'pending')==='fail'?'on':''}" onclick="setStatus(${r.id},'fail')">❌ 계약실패</button>
+          <button class="status-btn st-pending ${(r.status||'pending')==='pending'?'on':''}" onclick="setStatus(${r.id},'pending')">🤔 고민 중</button>
+        </div>
       </div>
-    `).join('')}
+    `}).join('')}
   `;
 }
 
-function exportCSV(){
+function setStatus(id, status){
   const responses = JSON.parse(localStorage.getItem('asan_responses')||'[]');
-  const rows = [['날짜','아파트명','동','호','연락처','층수','기후','확장구조','자녀/반려동물','주요문제','그린리모델링','성향','선호브랜드','선호색상','프레임두께','최우선요소','업체선정기준','교체시기','1순위제품','1순위점수','2순위제품','2순위점수','3순위제품','3순위점수']];
+  const idx = responses.findIndex(r=>r.id===id);
+  if(idx>=0){
+    responses[idx].status = status;
+    localStorage.setItem('asan_responses', JSON.stringify(responses));
+    if(navigator.vibrate) navigator.vibrate(20);
+    renderAdmin();
+  }
+}
+
+function deleteResponse(id){
+  if(!confirm('이 진단 내역을 삭제하시겠습니까?\n삭제된 내역은 복구할 수 없습니다.')) return;
+  let responses = JSON.parse(localStorage.getItem('asan_responses')||'[]');
+  responses = responses.filter(r=>r.id!==id);
+  localStorage.setItem('asan_responses', JSON.stringify(responses));
+  if(navigator.vibrate) navigator.vibrate(40);
+  renderAdmin();
+}
+
+function exportCSV(){
+  const responses = getVisibleResponses();
+  const statusKor = {success:'계약완료', fail:'계약실패', pending:'고민중'};
+  const rows = [['날짜','담당사원','사원코드','계약상태','아파트명','동','호','연락처','층수','우리집특징','확장구조','자녀/반려동물','주요문제','그린리모델링','성향','선호브랜드','선호색상','프레임두께','최우선요소','업체선정기준','교체시기','1순위제품','1순위점수','2순위제품','2순위점수','3순위제품','3순위점수']];
   responses.forEach(r=>{
     rows.push([
-      r.date,r.customer.apt,r.customer.dong,r.customer.ho,r.customer.phone,
+      r.date, r.staff?r.staff.name:'미상', r.staff?r.staff.code:'----', statusKor[r.status||'pending'],
+      r.customer.apt,r.customer.dong,r.customer.ho,r.customer.phone,
       r.answers.floor,r.answers.climate,r.answers.expansion,r.answers.kids,
       r.answers.problem,r.answers.green,r.answers.budget,r.answers.brand,r.answers.color,
       r.answers.thickness,r.answers.priority,r.answers.vendor,r.answers.timing,
@@ -1097,6 +1361,16 @@ function exportCSV(){
   a.href = URL.createObjectURL(blob);
   a.download = `아산창호시스템_설문결과_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
+}
+
+function backToQuiz(){
+  // 결과 페이지에서 마지막 질문으로 돌아가서 답변 수정 가능
+  document.getElementById('result-page').style.display='none';
+  document.getElementById('quiz-page').style.display='block';
+  current = QUESTIONS.length - 1;
+  soundTransition();
+  renderQuestion();
+  window.scrollTo(0,0);
 }
 
 function restartQuiz(){
