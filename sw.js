@@ -1,5 +1,5 @@
 // 버전을 올리면 모든 사용자에게 자동으로 새 버전이 배포됩니다.
-const CACHE_NAME = 'asan-v13';
+const CACHE_NAME = 'asan-v14';
 const ASSETS = ['./index.html','./icon-192.png','./icon-512.png','./manifest.json'];
 
 // 설치: 새 서비스워커를 즉시 활성화

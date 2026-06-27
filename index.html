@@ -915,6 +915,11 @@ function renderQuestion(){
             enterkeyhint="${f.hint}"
             placeholder="${f.placeholder}"
             value="${infoData[f.key]||''}"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            name="asan_${f.key}_field"
             oninput="updateInfo('${f.key}',this.value,'${f.inputType}')"
             onkeydown="onInfoKeyDown(event,${i})">
         </div>
@@ -1152,7 +1157,7 @@ function showResult(){
       <div class="info-display-row"><span class="info-display-key">층 수</span><span class="info-display-val">${findAnswerLabel('floor')||'-'}</span></div>
       <div class="info-display-row"><span class="info-display-key">교체 시기</span><span class="info-display-val">${findAnswerByText('교체 시기')||'-'}</span></div>
     </div>
-    <div style="font-size:11px;color:var(--sub-text);text-align:center;margin:6px 16px 0;">💡 연락처를 누르면 고객님께 결과 문자를 보낼 수 있어요</div>
+    <div style="font-size:11px;color:var(--sub-text);text-align:center;margin:6px 16px 0;">💡 연락처를 누르면 고객님께 바로 문자를 보낼 수 있어요</div>
   `;
 
   // 상위 3개 + 동점 처리
@@ -1369,28 +1374,8 @@ function sendResultSMS(){
   if(navigator.vibrate) navigator.vibrate(30);
   const phone = (infoData.phone||'').replace(/[^0-9]/g,'');
   if(!phone){ alert('고객 연락처가 없습니다.'); return; }
-
-  // 이모지/특수문자 없는 깔끔한 텍스트 (문자 호환성 최대화)
-  const nameStr = infoData.apt?`${infoData.apt} ${infoData.dong}동 ${infoData.ho}호`:'고객님';
-  const list = window._resultTop3 || [];
-  let text = `[아산창호시스템] AI 창호 추천 결과\n${nameStr} 고객님\n\n`;
-  text += list.map(x=>{
-    let line = `${x.rank}순위: ${x.product} (${x.score}점)`;
-    if(x.estimate) line += `\n - 견적: ${formatEstimate(x.estimate)}`;
-    return line;
-  }).join('\n');
-  text += `\n\n아산창호시스템 임직원은 창호 교체를 통한 안락함을 제공하는 것을 최우선으로 합니다.\n문의 1666-4620`;
-
-  // 전체 내용 클립보드 복사 (혹시 본문이 잘려도 붙여넣기 가능)
-  copyTextSilent(text);
-
-  // 고객 번호로 문자창 열기 (본문 자동 입력 시도)
-  const ua = navigator.userAgent.toLowerCase();
-  const isIOS = ua.indexOf('iphone')>=0 || ua.indexOf('ipad')>=0;
-  const encoded = encodeURIComponent(text);
-  const smsUrl = isIOS ? `sms:${phone}&body=${encoded}` : `sms:${phone}?body=${encoded}`;
-  showToast('📋 결과 복사됨 · 문자창을 엽니다');
-  setTimeout(()=>{ location.href = smsUrl; }, 250);
+  // 본문 없이 고객 번호로 문자창만 열기 (빈 메시지 작성칸)
+  location.href = `sms:${phone}`;
 }
 
 // ===================== 이미지로 저장 (모바일 갤러리) =====================
