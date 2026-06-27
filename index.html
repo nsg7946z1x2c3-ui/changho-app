@@ -34,7 +34,8 @@
 }
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{font-family:'LGE Smart',-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:var(--bg-light);color:var(--title);min-height:100vh;-webkit-font-smoothing:antialiased;overscroll-behavior-y:contain;}
+html{overscroll-behavior:none;height:100%;}
+html,body{font-family:'LGE Smart',-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:var(--bg-light);color:var(--title);min-height:100vh;-webkit-font-smoothing:antialiased;overscroll-behavior:none;}
 .wrap{max-width:480px;margin:0 auto;background:var(--white);min-height:100vh;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,0.05);}
 
 /* ===== 헤더 ===== */
@@ -2074,15 +2075,23 @@ setAdminBtnVisible(false);
 // 갤럭시/안드로이드 "당겨서 새로고침" 방지
 // (화면 맨 위에서 아래로 당겨도 새로고침되지 않게 함)
 (function preventPullToRefresh(){
-  let startY = 0;
+  let lastY = 0;
+  let maybePull = false;
   document.addEventListener('touchstart', function(e){
-    if(e.touches.length === 1) startY = e.touches[0].clientY;
+    if(e.touches.length !== 1) { maybePull = false; return; }
+    lastY = e.touches[0].clientY;
+    const st = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    // 시작 시점에 화면 최상단에 있으면 당겨서 새로고침 후보
+    maybePull = (st <= 0);
   }, {passive: false});
   document.addEventListener('touchmove', function(e){
+    if(e.touches.length !== 1) return;
     const y = e.touches[0].clientY;
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    // 화면 맨 위(스크롤 0)에서 아래로 당기는 동작이면 막기
-    if(scrollTop <= 0 && y > startY){
+    const st = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    const goingDown = y > lastY;
+    lastY = y;
+    // 최상단에서 아래로 당기는 동작이면 새로고침 차단
+    if(maybePull && st <= 0 && goingDown){
       e.preventDefault();
     }
   }, {passive: false});
@@ -2091,44 +2100,57 @@ setAdminBtnVisible(false);
 // 저장된 로그인 정보가 있으면 자동 로그인 (간편 로그인)
 tryAutoLogin();
 
-// 현재 화면 상태 추적 (실제 보이는지로 판단)
+// ===================== 뒤로가기 처리 (직전 페이지로) =====================
 function isVisible(id){
   const el = document.getElementById(id);
   if(!el) return false;
   return getComputedStyle(el).display !== 'none';
 }
-function getCurrentScreen(){
-  if(isVisible('result-page')) return 'result';
-  if(isVisible('quiz-page')) return 'quiz';
-  if(isVisible('intro-page')) return 'intro';
-  if(isVisible('login-page')) return 'login';
-  return 'login';
+function anyModalOpen(){
+  const ids = ['estimate-modal','detail-modal','memo-modal'];
+  return ids.some(id=>{
+    const el = document.getElementById(id);
+    return el && getComputedStyle(el).display !== 'none';
+  });
 }
 
-// 히스토리 스택 쌓기 (뒤로가기로 앱이 닫히지 않도록)
-history.pushState({screen:'app'}, '');
+// 히스토리 스택을 여러 개 쌓아둠 (뒤로가기로 앱이 절대 닫히지 않게)
+for(let i=0;i<5;i++){ history.pushState({app:true, i:i}, ''); }
 
 window.addEventListener('popstate', function(e){
-  // 다시 히스토리를 채워서 앱이 닫히지 않게 함
-  history.pushState({screen:'app'}, '');
+  // 어떤 경우든 항상 히스토리를 다시 채워서 앱이 닫히거나 외부로 나가지 않게 함
+  history.pushState({app:true}, '');
 
-  // 1) 모달이 열려있으면 모달부터 닫기
+  // 1) 모달이 열려 있으면 모달부터 닫기
   const estModal = document.getElementById('estimate-modal');
   const detailModal = document.getElementById('detail-modal');
   const memoModal = document.getElementById('memo-modal');
-  if(estModal && getComputedStyle(estModal).display==='flex'){ closeEstimateModal(); return; }
-  if(detailModal && getComputedStyle(detailModal).display==='flex'){ closeDetailModal(); return; }
-  if(memoModal && getComputedStyle(memoModal).display==='flex'){ closeMemoModal(); return; }
+  if(estModal && getComputedStyle(estModal).display!=='none'){ closeEstimateModal(); return; }
+  if(detailModal && getComputedStyle(detailModal).display!=='none'){ closeDetailModal(); return; }
+  if(memoModal && getComputedStyle(memoModal).display!=='none'){ closeMemoModal(); return; }
 
-  // 2) 관리자 페이지가 열려있으면 닫기
+  // 2) 관리자 페이지가 열려 있으면 닫기 (관리자 내부 뷰도 단계별로)
   const adminPage = document.getElementById('admin-page');
-  if(adminPage && getComputedStyle(adminPage).display!=='none'){ closeAdmin(); return; }
+  if(adminPage && getComputedStyle(adminPage).display!=='none'){
+    // 최고관리자 세부 화면이면 목록으로, 아니면 관리자 닫기
+    if(typeof currentStaff!=='undefined' && currentStaff && currentStaff.isMaster &&
+       typeof masterView!=='undefined' && (masterView==='staffdetail')){
+      setMasterView('bystaff');
+    } else if(typeof masterView!=='undefined' && (masterView==='overall'||masterView==='bystaff')){
+      setMasterView('list');
+    } else {
+      closeAdmin();
+    }
+    return;
+  }
 
-  // 3) 화면별 뒤로가기 동작 (직전 페이지로)
-  const screen = getCurrentScreen();
-  if(screen==='quiz'){
-    // 설문 중: 이전 질문으로, 첫 질문이면 인트로로
-    if(current > 0){
+  // 3) 현재 화면에 따라 "직전 페이지"로 이동 (절대 첫 화면으로 안 감)
+  if(isVisible('result-page')){
+    // 결과 → 설문 마지막 질문 (수정 가능)
+    backToQuiz();
+  } else if(isVisible('quiz-page')){
+    // 설문 중 → 이전 질문 (첫 질문이면 인트로로)
+    if(typeof current==='number' && current > 0){
       goBack();
     } else {
       document.getElementById('quiz-page').style.display='none';
@@ -2136,14 +2158,12 @@ window.addEventListener('popstate', function(e){
       setAdminBtnVisible(true);
       window.scrollTo(0,0);
     }
-  } else if(screen==='result'){
-    // 결과 화면: 설문 마지막 질문으로 돌아가서 수정 가능
-    backToQuiz();
-  } else if(screen==='intro'){
-    // 인트로(홈): 머무름 (로그아웃 안 함)
+  } else if(isVisible('intro-page')){
+    // 인트로(홈) → 머무름 (로그아웃/종료 안 함)
     if(typeof showToast==='function') showToast('홈 화면입니다');
+  } else {
+    // 로그인 화면 → 아무 동작 안 함 (앱 종료/로그아웃 방지)
   }
-  // login 화면에서는 아무 동작 안 함 (로그아웃 방지)
 });
 
 </script>
