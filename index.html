@@ -486,6 +486,24 @@ canvas#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 
 
 <!-- ===== 설문 상세보기 모달 ===== -->
+<!-- ===== 견적 입력 모달 ===== -->
+<div id="estimate-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:230;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:380px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="background:var(--signature);padding:16px 20px;border-bottom:3px solid var(--accent);">
+      <div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:1px;margin-bottom:2px;">견적 입력</div>
+      <div id="estimate-modal-title" style="font-size:15px;font-weight:700;color:#fff;"></div>
+    </div>
+    <div style="padding:20px;">
+      <input id="estimate-modal-input" type="text" inputmode="numeric" placeholder="예) 1250  →  1,250만원" style="width:100%;border:1px solid var(--line);border-radius:10px;padding:14px;font-size:15px;font-family:inherit;outline:none;margin-bottom:6px;" onkeypress="if(event.key==='Enter')submitEstimate()">
+      <div style="font-size:11px;color:var(--sub-text);margin-bottom:16px;">💡 숫자만 입력하면 '만원'이 자동으로 붙어요</div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="closeEstimateModal()" style="flex:1;padding:14px;border:1px solid var(--line);border-radius:11px;background:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--sub-text);">취소</button>
+        <button onclick="submitEstimate()" style="flex:2;padding:14px;border:none;border-radius:11px;background:var(--signature);color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">저장하기</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="detail-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:210;align-items:center;justify-content:center;padding:16px;">
   <div style="background:#fff;border-radius:16px;width:100%;max-width:440px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
     <div style="background:var(--signature);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--accent);position:sticky;top:0;z-index:2;">
@@ -1160,6 +1178,19 @@ function formatPhone(p){
   return p;
 }
 
+// 견적 표시 포맷: 숫자만 입력 시 콤마 + '만원' 자동 추가
+function formatEstimate(val){
+  if(val===null || val===undefined || val==='') return '';
+  const str = String(val).trim();
+  // 이미 '원'이나 글자가 포함되어 있으면 그대로 표시 (예: "창3개 300만원")
+  if(/[가-힣a-zA-Z원]/.test(str)) return str;
+  // 숫자(와 콤마)만 있으면 → 콤마 찍고 '만원' 붙이기
+  const num = str.replace(/[^0-9]/g,'');
+  if(num==='') return str;
+  const withComma = Number(num).toLocaleString('ko-KR');
+  return withComma + '만원';
+}
+
 function onConsult(){
   if(navigator.vibrate) navigator.vibrate(40);
   alert('상담 신청이 접수되었습니다.\n곧 연락드리겠습니다. 😊');
@@ -1216,19 +1247,36 @@ function launchConfetti(){
 }
 
 // ===================== 견적 입력 =====================
+// 공용 견적 입력 모달
+let _estimateCallback = null;
+function openEstimateModal(title, current, callback){
+  document.getElementById('estimate-modal-title').textContent = title;
+  document.getElementById('estimate-modal-input').value = current || '';
+  document.getElementById('estimate-modal').style.display = 'flex';
+  _estimateCallback = callback;
+  setTimeout(()=>document.getElementById('estimate-modal-input').focus(), 100);
+}
+function closeEstimateModal(){
+  document.getElementById('estimate-modal').style.display = 'none';
+  _estimateCallback = null;
+}
+function submitEstimate(){
+  const val = document.getElementById('estimate-modal-input').value.trim();
+  const cb = _estimateCallback;
+  closeEstimateModal();
+  if(cb) cb(val);
+}
+
 function openEstimateInput(idx){
   if(navigator.vibrate) navigator.vibrate(15);
   const item = window._resultTop3[idx];
-  const cur = item.estimate || '';
-  const val = prompt(`[${item.product}]\n견적 금액을 입력해 주세요\n(예: 창 3개 약 300만원)`, cur);
-  if(val!==null){
-    window._resultTop3[idx].estimate = val.trim();
+  openEstimateModal(item.product, item.estimate || '', function(val){
+    window._resultTop3[idx].estimate = val;
     renderEstimateDisplay();
-    // Firebase에도 견적 반영
     if(window._savedDocId){
       try { db.collection(COLLECTION).doc(String(window._savedDocId)).update({top3: window._resultTop3}); } catch(e){}
     }
-  }
+  });
 }
 
 function renderEstimateDisplay(){
@@ -1240,7 +1288,7 @@ function renderEstimateDisplay(){
       ${hasAny ? list.filter(x=>x.estimate).map(x=>`
         <div class="est-row">
           <span class="est-prod">${RANK_MEDAL[x.rank-1]} ${x.product}</span>
-          <span class="est-price">${x.estimate}</span>
+          <span class="est-price">${formatEstimate(x.estimate)}</span>
         </div>
       `).join('') : '<div class="est-empty">추천 창호를 눌러 견적을 입력하세요</div>'}
     </div>
@@ -1255,7 +1303,7 @@ function buildResultText(){
   return `[㈜아산창호시스템] AI 창호 추천 결과\n\n👤 ${nameStr} 고객님\n\n` +
     list.map(x=>{
       let line = `${RANK_MEDAL[x.rank-1]} ${RANK_LABEL[x.rank-1]}: ${x.product} (${x.score}점)`;
-      if(x.estimate) line += `\n   💰 견적: ${x.estimate}`;
+      if(x.estimate) line += `\n   💰 견적: ${formatEstimate(x.estimate)}`;
       return line;
     }).join('\n\n') +
     `\n\n창호 교체를 통한 안락함을 제공하는 것을 최우선으로 합니다.\n📞 1666-4620 ㈜아산창호시스템`;
@@ -1265,25 +1313,13 @@ function shareToCustomer(){
   if(navigator.vibrate) navigator.vibrate(30);
   const text = buildResultText();
   const phone = (infoData.phone||'').replace(/[^0-9]/g,'');
-
-  // 1) 클립보드에 복사
   copyTextSilent(text);
-
-  // 2) 고객 번호로 문자 메시지창 열기
   if(phone){
-    const encoded = encodeURIComponent(text);
-    // iOS/안드로이드 SMS 링크
-    const ua = navigator.userAgent.toLowerCase();
-    let smsUrl;
-    if(ua.indexOf('iphone')>=0 || ua.indexOf('ipad')>=0){
-      smsUrl = `sms:${phone}&body=${encoded}`;
-    } else {
-      smsUrl = `sms:${phone}?body=${encoded}`;
-    }
-    showToast('📋 내용이 복사되었습니다');
-    setTimeout(()=>{ location.href = smsUrl; }, 300);
+    const ask = confirm('결과 내용이 복사되었습니다.\n\n[확인] 문자 앱 열기 → 붙여넣기\n[취소] 복사만 하기');
+    if(ask){ setTimeout(()=>{ location.href = `sms:${phone}`; }, 200); }
+    else { showToast('📋 결과 내용이 복사되었습니다'); }
   } else {
-    alert('고객 연락처가 없어 메시지를 보낼 수 없습니다.\n(내용은 클립보드에 복사되었습니다)');
+    alert('고객 연락처가 없습니다.\n(내용은 클립보드에 복사되었습니다)');
   }
 }
 
@@ -1853,7 +1889,7 @@ function openDetailModal(id){
   bodyHtml += (r.top3||[]).map((t,ti)=>`
     <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line-light);font-size:13px;cursor:pointer;" onclick="editDetailEstimate(${ti})">
       <span style="color:var(--title);font-weight:600;">${RANK_MEDAL[(t.rank||1)-1]} ${t.product} <span style="color:var(--sub-text);font-weight:400;">(${t.score}점)</span></span>
-      <span style="color:var(--signature);font-weight:700;text-decoration:underline dotted;">${t.estimate||'✏️ 견적 입력'}</span>
+      <span style="color:var(--signature);font-weight:700;text-decoration:underline dotted;">${t.estimate?formatEstimate(t.estimate):'✏️ 견적 입력'}</span>
     </div>`).join('');
 
   // 메모
@@ -1873,19 +1909,17 @@ function openDetailModal(id){
 }
 
 // [3] 상세보기에서 견적 수정
-async function editDetailEstimate(ti){
+function editDetailEstimate(ti){
   const r = cachedResponses.find(x=>Number(x.id)===Number(detailTargetId)||x.id===String(detailTargetId));
   if(!r || !r.top3 || !r.top3[ti]) return;
-  const cur = r.top3[ti].estimate || '';
-  const val = prompt(`[${r.top3[ti].product}]\n견적 금액을 입력해 주세요\n(예: 창 3개 약 300만원)`, cur);
-  if(val!==null){
-    r.top3[ti].estimate = val.trim();
+  openEstimateModal(r.top3[ti].product, r.top3[ti].estimate || '', async function(val){
+    r.top3[ti].estimate = val;
     try {
       await db.collection(COLLECTION).doc(String(r.id)).update({top3: r.top3});
       showToast('✅ 견적 수정됨');
-      openDetailModal(detailTargetId); // 새로고침
+      openDetailModal(detailTargetId);
     } catch(e){ showToast('⚠️ 저장 실패'); }
-  }
+  });
 }
 
 // [2] 상세보기에서 고객에게 메시지 보내기
@@ -1895,25 +1929,32 @@ function sendDetailMessage(id){
   if(navigator.vibrate) navigator.vibrate(30);
 
   const nameStr = `${r.customer.apt} ${r.customer.dong}동 ${r.customer.ho}호`;
-  let text = `[㈜아산창호시스템] AI 창호 추천 결과\n\n👤 ${nameStr} 고객님\n\n`;
+  // 이모지/특수문자 최소화 (문자 끊김 방지)
+  let text = `[아산창호시스템] AI 창호 추천 결과\n`;
+  text += `${nameStr} 고객님\n\n`;
   text += (r.top3||[]).map(t=>{
-    let line = `${RANK_MEDAL[(t.rank||1)-1]} ${RANK_LABEL[(t.rank||1)-1]}: ${t.product} (${t.score}점)`;
-    if(t.estimate) line += `\n   💰 견적: ${t.estimate}`;
+    let line = `${t.rank||1}순위: ${t.product} (${t.score}점)`;
+    if(t.estimate) line += `\n - 견적: ${formatEstimate(t.estimate)}`;
     return line;
-  }).join('\n\n');
-  text += `\n\n아산창호시스템 임직원은 창호 교체를 통한 안락함을 제공하는 것을 최우선으로 합니다.\n📞 1666-4620`;
+  }).join('\n');
+  text += `\n\n아산창호시스템 임직원은 창호 교체를 통한 안락함을 제공하는 것을 최우선으로 합니다.\n문의 1666-4620`;
 
-  // 클립보드 복사
+  // 전체 내용을 클립보드에 복사
   copyTextSilent(text);
 
   const phone = (r.customer.phone||'').replace(/[^0-9]/g,'');
   if(phone){
-    const encoded = encodeURIComponent(text);
     const ua = navigator.userAgent.toLowerCase();
-    const smsUrl = (ua.indexOf('iphone')>=0||ua.indexOf('ipad')>=0)
-      ? `sms:${phone}&body=${encoded}` : `sms:${phone}?body=${encoded}`;
-    showToast('📋 내용 복사됨');
-    setTimeout(()=>{ location.href = smsUrl; }, 300);
+    const isIOS = ua.indexOf('iphone')>=0||ua.indexOf('ipad')>=0;
+    // 안드로이드에서 긴 본문이 잘리는 문제 → 짧은 안내만 넣고 본문은 붙여넣기 유도
+    const ask = confirm('결과 내용이 복사되었습니다.\n\n[확인] 문자 앱을 열어 붙여넣기\n[취소] 복사만 하기\n\n문자 앱에서 입력칸을 길게 눌러 "붙여넣기" 하시면 전체 내용이 들어갑니다.');
+    if(ask){
+      // 본문 없이 수신번호만 (붙여넣기 유도) → 끊김 방지
+      const smsUrl = isIOS ? `sms:${phone}` : `sms:${phone}`;
+      setTimeout(()=>{ location.href = smsUrl; }, 200);
+    } else {
+      showToast('📋 결과 내용이 복사되었습니다');
+    }
   } else {
     alert('고객 연락처가 없습니다.\n(내용은 클립보드에 복사되었습니다)');
   }
@@ -2023,8 +2064,10 @@ window.addEventListener('popstate', function(e){
   history.pushState({screen:'app'}, '');
 
   // 모달이 열려있으면 모달부터 닫기
+  const estModal = document.getElementById('estimate-modal');
   const detailModal = document.getElementById('detail-modal');
   const memoModal = document.getElementById('memo-modal');
+  if(estModal && estModal.style.display==='flex'){ closeEstimateModal(); return; }
   if(detailModal && detailModal.style.display==='flex'){ closeDetailModal(); return; }
   if(memoModal && memoModal.style.display==='flex'){ closeMemoModal(); return; }
 
