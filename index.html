@@ -34,7 +34,7 @@
 }
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-html,body{font-family:'LGE Smart',-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:var(--bg-light);color:var(--title);min-height:100vh;-webkit-font-smoothing:antialiased;}
+html,body{font-family:'LGE Smart',-apple-system,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;background:var(--bg-light);color:var(--title);min-height:100vh;-webkit-font-smoothing:antialiased;overscroll-behavior-y:contain;}
 .wrap{max-width:480px;margin:0 auto;background:var(--white);min-height:100vh;position:relative;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,0.05);}
 
 /* ===== 헤더 ===== */
@@ -2070,6 +2070,23 @@ function restartQuiz(){
 // ===================== 초기화 & 뒤로가기 처리 =====================
 // 시작 시 관리자 버튼 숨김 (로그인 화면)
 setAdminBtnVisible(false);
+
+// 갤럭시/안드로이드 "당겨서 새로고침" 방지
+// (화면 맨 위에서 아래로 당겨도 새로고침되지 않게 함)
+(function preventPullToRefresh(){
+  let startY = 0;
+  document.addEventListener('touchstart', function(e){
+    if(e.touches.length === 1) startY = e.touches[0].clientY;
+  }, {passive: false});
+  document.addEventListener('touchmove', function(e){
+    const y = e.touches[0].clientY;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    // 화면 맨 위(스크롤 0)에서 아래로 당기는 동작이면 막기
+    if(scrollTop <= 0 && y > startY){
+      e.preventDefault();
+    }
+  }, {passive: false});
+})();
 
 // 저장된 로그인 정보가 있으면 자동 로그인 (간편 로그인)
 tryAutoLogin();
