@@ -247,6 +247,44 @@ canvas#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 .login-hint{text-align:center;font-size:11px;color:rgba(255,255,255,0.6);margin-top:16px;line-height:1.6;}
 .staff-badge{position:fixed;top:70px;right:12px;background:rgba(245,193,53,0.95);color:var(--signature);font-size:11px;font-weight:700;padding:5px 12px;border-radius:99px;z-index:45;box-shadow:0 2px 8px rgba(0,0,0,0.2);display:none;}
 
+.rec-tip{font-size:11px;color:var(--sub-text);text-align:center;margin-top:10px;padding:8px;background:rgba(245,193,53,0.1);border-radius:8px;}
+.consult-slogan{font-size:14px;opacity:0.95;margin-bottom:14px!important;line-height:1.6;font-weight:500;}
+.consult-phone{background:var(--accent);color:var(--signature);display:inline-block;padding:10px 24px;border-radius:10px;font-size:18px;font-weight:700;letter-spacing:0.5px;box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+.est-display{margin:16px 16px 0;background:#FFFBF0;border:1.5px solid var(--accent);border-radius:12px;padding:16px 18px;}
+.est-display-title{font-size:12px;color:var(--accent-deep);font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.est-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed #EAD9A8;font-size:13px;}
+.est-row:last-child{border-bottom:none;}
+.est-prod{color:var(--title);font-weight:600;}
+.est-price{color:var(--signature);font-weight:700;}
+.est-empty{font-size:12px;color:var(--sub-text);text-align:center;padding:4px;}
+.rec-card{cursor:pointer;transition:transform 0.1s;}
+.rec-card:active{transform:scale(0.96);}
+.btn-detail{width:100%;margin-top:8px;padding:9px;background:var(--bg-light);border:1px solid var(--line);border-radius:8px;font-size:12px;font-weight:600;color:var(--signature);cursor:pointer;font-family:inherit;}
+.master-tabs{display:flex;gap:6px;margin-bottom:14px;}
+.master-tab{flex:1;padding:11px;border:none;border-radius:10px;background:var(--bg-light);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;color:var(--sub-text);}
+.master-tab.active{background:var(--signature);color:#fff;}
+.staff-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:#fff;border:1px solid var(--line-light);border-radius:12px;margin-bottom:8px;cursor:pointer;transition:all 0.1s;}
+.staff-row:active{transform:scale(0.98);}
+.staff-row-name{font-size:14px;font-weight:700;color:var(--signature);}
+.staff-row-code{font-size:11px;color:var(--sub-text);margin-top:2px;}
+.staff-row-stat{text-align:right;font-size:11px;color:var(--sub-text);}
+.staff-row-stat b{font-size:16px;color:var(--title);}
+.analytics-card{background:#fff;border:1px solid var(--line-light);border-radius:12px;padding:16px;margin-bottom:12px;}
+.analytics-title{font-size:13px;font-weight:700;color:var(--signature);margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.analytics-box{text-align:center;padding:12px 6px;background:var(--bg-light);border-radius:10px;}
+.analytics-num{font-size:22px;font-weight:700;color:var(--signature);}
+.analytics-label{font-size:10px;color:var(--sub-text);margin-top:2px;}
+.month-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11px;}
+.month-bar-label{width:52px;color:var(--sub-text);flex-shrink:0;}
+.month-bar-track{flex:1;height:18px;background:var(--bg-light);border-radius:4px;overflow:hidden;}
+.month-bar-fill{height:100%;background:linear-gradient(90deg,var(--signature),var(--sub-color));border-radius:4px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px;color:#fff;font-size:10px;font-weight:700;min-width:20px;}
+.btn-back-master{width:100%;padding:11px;margin-bottom:12px;background:var(--bg-light);border:1px solid var(--line);border-radius:8px;font-size:13px;font-weight:600;color:var(--signature);cursor:pointer;font-family:inherit;}
+.privacy-box{margin-top:16px;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+.privacy-text{background:var(--bg-light);padding:12px 14px;font-size:11px;color:var(--sub-text);line-height:1.7;}
+.privacy-text strong{color:var(--title);}
+.privacy-check{display:flex;align-items:flex-start;gap:8px;padding:12px 14px;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:var(--title);border-top:1px solid var(--line);}
+.privacy-check input{width:18px;height:18px;margin-top:1px;flex-shrink:0;accent-color:var(--signature);}
 @media (max-width: 380px){
   .intro-hero h1{font-size:22px;}
   .q-text{font-size:16px;}
@@ -402,15 +440,16 @@ canvas#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
   <div class="rec-section">
     <div class="rec-section-title">맞춤 추천 TOP 3</div>
     <div class="rec-grid" id="rec-cards-wrap"></div>
+    <div class="rec-tip">💡 추천 창호를 누르면 견적을 입력할 수 있어요</div>
   </div>
+  <div id="estimate-display"></div>
   <div class="consult-cta">
-    <h3>전문가 상담 신청</h3>
-    <p>방문 견적부터 시공까지<br>아산창호시스템이 책임집니다</p>
-    <button class="consult-cta-btn" onclick="onConsult()">📞 무료 상담 신청</button>
+    <p class="consult-slogan">창호 교체를 통한 안락함을 제공하는 것을<br>최우선으로 합니다</p>
+    <div class="consult-phone">📞 1666-4620</div>
   </div>
   <div class="share-section" id="share-section">
-    <button class="btn-share" onclick="shareKakao()">
-      <span style="font-size:18px">💬</span> 카카오톡으로 결과 공유하기
+    <button class="btn-share" onclick="shareToCustomer()">
+      <span style="font-size:18px">💬</span> 메시지로 결과 공유하기
     </button>
     <button class="btn-save-img" onclick="saveAsImage()">
       <span style="font-size:16px">📷</span> 결과 이미지로 저장하기
@@ -441,6 +480,20 @@ canvas#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 
 <button class="btn-admin-link" onclick="openAdmin()" title="관리자">⚙</button>
 
+
+<!-- ===== 설문 상세보기 모달 ===== -->
+<div id="detail-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:210;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:440px;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+    <div style="background:var(--signature);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--accent);position:sticky;top:0;z-index:2;">
+      <div>
+        <div style="font-size:11px;color:var(--accent);font-weight:700;letter-spacing:1px;margin-bottom:2px;">설문 상세 내용</div>
+        <div id="detail-title" style="font-size:15px;font-weight:700;color:#fff;"></div>
+      </div>
+      <button onclick="closeDetailModal()" style="background:rgba(255,255,255,0.15);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;flex-shrink:0;">×</button>
+    </div>
+    <div id="detail-body" style="padding:18px 20px;"></div>
+  </div>
+</div>
 
 <!-- ===== 메모 모달 (견적안내/고객특징) ===== -->
 <div id="memo-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:200;align-items:center;justify-content:center;padding:20px;">
@@ -571,7 +624,7 @@ function logout(){
 }
 
 
-const SECTIONS = ["기본 정보","기본 정보","기본 정보","기본 정보","기본 정보","현재 창호 문제점","취향과 예산","취향과 예산","취향과 예산","취향과 예산","취향과 예산","취향과 예산","취향과 예산","취향과 예산"];
+const SECTIONS = ["기본 정보","기본 정보","현재 창호 문제점","취향과 예산","취향과 예산","취향과 예산","취향과 예산","취향과 예산","취향과 예산"];
 
 const QUESTIONS = [
   {
@@ -585,29 +638,19 @@ const QUESTIONS = [
   },
   {type:"single", num:"질문 2", text:"현재 몇 층에 거주하시나요?", sub:"",
     options:["저층 (1~5층)","중층 (6~14층)","고층 (15~25층)","초고층 (26층 이상)"], scoreKey:"floor"},
-  {type:"multi", num:"질문 3", text:"우리집의 특징은 어떤가요?", sub:"복수 선택 가능",
-    options:["해당 없음","대로변","해안가","고지대","일반 주택가"], scoreKey:"climate"},
-  {type:"multi", num:"질문 4", text:"확장형 구조인가요?", sub:"복수 선택 가능",
-    options:["해당 없음","거실 확장","작은방 확장","주방 확장"], scoreKey:null},
-  {type:"single", num:"질문 5", text:"어린 자녀나 반려동물이 함께 거주하시나요?", sub:"",
-    options:["네","아니오"], scoreKey:null},
-  {type:"multi", num:"질문 6", text:"가장 해결하고 싶은 문제는 무엇인가요?", sub:"복수 선택 가능",
+  {type:"multi", num:"질문 3", text:"가장 해결하고 싶은 문제는 무엇인가요?", sub:"복수 선택 가능",
     options:["겨울철 한기(단열), 여름철 열기(차열)","노후로 인한 개폐 불편","강풍에 흔들림(불안함)","소음 차단","미관 및 디자인","누수"], scoreKey:"problem"},
-  {type:"single", num:"질문 7", text:"그린리모델링 사업에 대해 아시나요?", sub:"정부에서 이자를 지원하는 에너지 절감 지원 사업입니다",
-    options:["네, 알고 있어요","아니오, 처음 들어요"], scoreKey:null},
-  {type:"single", num:"질문 8", text:"나의 성향은 어떤가요?", sub:"",
+  {type:"single", num:"질문 4", text:"나의 성향은 어떤가요?", sub:"",
     options:["프리미엄 (비싸더라도 최고의 브랜드)","실속형 (기능이 뛰어나면 브랜드 무관)","경제형 (사용에 문제 없으면 최대한 저렴하게)"], scoreKey:"budget"},
-  {type:"multi", num:"질문 9", text:"마음에 담아둔 브랜드가 있나요?", sub:"복수 선택 가능",
-    options:["없음","LX Z:IN (구 LG하우시스)","KCC","현대 L&C","기타 2군 브랜드 (휴그린, 영림, 예림 등)"], scoreKey:"brand"},
-  {type:"single", num:"질문 10", text:"선호하시는 창호 프레임 색상은?", sub:"",
+  {type:"single", num:"질문 5", text:"선호하시는 창호 프레임 색상은?", sub:"",
     options:["화이트","고급스러운 화이트","베이지","그레이","우드"], scoreKey:"color"},
-  {type:"single", num:"질문 11", text:"프레임 두께 스타일은 어떤가요?", sub:"",
+  {type:"single", num:"질문 6", text:"프레임 두께 스타일은 어떤가요?", sub:"",
     options:["두껍고 튼튼한 느낌","슬림하고 개방감 있는 느낌"], scoreKey:"thickness"},
-  {type:"single", num:"질문 12", text:"나에게 가장 중요한 것 한 가지만 고른다면?", sub:"",
+  {type:"single", num:"질문 7", text:"나에게 가장 중요한 것 한 가지만 고른다면?", sub:"",
     options:["가격","브랜드","디자인","기능성"], scoreKey:"priority"},
-  {type:"multi3", num:"질문 13", text:"창호업체 선정 시 가장 중요한 것 3가지를 선택해 주세요", sub:"정확히 3가지를 선택해 주세요",
+  {type:"multi3", num:"질문 8", text:"창호업체 선정 시 가장 중요한 것 3가지를 선택해 주세요", sub:"정확히 3가지를 선택해 주세요",
     options:["공식대리점의 정품자재 사용","건설면허를 보유한 시공력","SGI 하자이행 보증보험 발급","업체의 업력과 규모","시공능력 관계 없이 무조건 싼가격","영업사원의 친절함"], scoreKey:null},
-  {type:"single", num:"질문 14", text:"마지막입니다. 교체 시기는 언제로 계획하나요?", sub:"",
+  {type:"single", num:"질문 9", text:"마지막입니다. 교체 시기는 언제로 계획하나요?", sub:"",
     options:["1개월 이내","2~3개월 이내","6개월 이내","1년 이내"], scoreKey:null}
 ];
 
@@ -665,8 +708,8 @@ const SCORES = {
 
 const PRODUCTS = [
   {brand:"LX Z:IN", name:"뷰프레임 140/250"},
-  {brand:"KCC 숲&숲", name:"프라임 120/252"},
-  {brand:"KCC 숲&숲", name:"뉴프라임 140/242"},
+  {brand:"KCC", name:"프라임 120/252"},
+  {brand:"KCC", name:"뉴프라임 140/242"},
   {brand:"현대 L&C", name:"L-3 121/250"},
   {brand:"현대 L&C", name:"L-5 132/252"}
 ];
@@ -801,6 +844,20 @@ function renderQuestion(){
             onkeydown="onInfoKeyDown(event,${i})">
         </div>
       `).join('')}
+      <div class="privacy-box">
+        <div class="privacy-text">
+          <strong>[개인정보 수집·이용 동의]</strong><br>
+          ㈜아산창호시스템은 창호 상담 및 견적 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.<br>
+          • 수집 항목: 아파트명, 동/호, 연락처<br>
+          • 이용 목적: 창호 추천 상담, 견적 안내, 사후 관리<br>
+          • 보유 기간: 수집일로부터 3년 (관련 법령에 따름)<br>
+          • 귀하는 동의를 거부할 권리가 있으며, 거부 시 상담 서비스 이용이 제한될 수 있습니다.
+        </div>
+        <label class="privacy-check">
+          <input type="checkbox" id="privacy-agree" onchange="checkInfoValid()">
+          <span>위 개인정보 수집·이용에 동의합니다. (필수)</span>
+        </label>
+      </div>
     `;
     checkInfoValid();
   } else if(q.type==='single'){
@@ -880,8 +937,11 @@ function updateInfo(key, val, type){
 }
 
 function checkInfoValid(){
-  // 고객정보는 모두 입력하지 않아도 넘어갈 수 있도록 항상 활성화
-  document.getElementById('btn-next').disabled = false;
+  // 개인정보 동의는 필수 (고객정보 입력은 선택)
+  const agree = document.getElementById('privacy-agree');
+  const ok = agree ? agree.checked : true;
+  const btn = document.getElementById('btn-next');
+  if(btn) btn.disabled = !ok;
 }
 
 function selectSingle(i){
@@ -928,6 +988,31 @@ function goNext(){
 }
 
 // ===================== 점수 계산 (100점 만점) =====================
+function findAnswerLabel(scoreKey){
+  // scoreKey로 질문 찾아서 답변 라벨 반환
+  for(let qi=0; qi<QUESTIONS.length; qi++){
+    const q = QUESTIONS[qi];
+    if(q.scoreKey===scoreKey){
+      const ans = answers[qi];
+      if(ans===null||ans===undefined) return '';
+      if(q.type==='single') return q.options[ans];
+      if(Array.isArray(ans)) return ans.map(i=>q.options[i]).join(', ');
+    }
+  }
+  return '';
+}
+function findAnswerByText(textIncludes){
+  for(let qi=0; qi<QUESTIONS.length; qi++){
+    const q = QUESTIONS[qi];
+    if(q.text && q.text.indexOf(textIncludes)>=0){
+      const ans = answers[qi];
+      if(ans===null||ans===undefined) return '';
+      if(q.type==='single') return q.options[ans];
+      if(Array.isArray(ans)) return ans.map(i=>q.options[i]).join(', ');
+    }
+  }
+  return '';
+}
 function calcScores(){
   const s = [0,0,0,0,0];
   const cnt = [0,0,0,0,0];
@@ -946,16 +1031,17 @@ function calcScores(){
     });
   }
 
-  // Q2(idx1) floor, Q3(idx2) climate(multi), Q6(idx5) problem(multi),
-  // Q8(idx7) budget, Q9(idx8) brand(multi), Q10(idx9) color, Q11(idx10) thickness, Q12(idx11) priority
-  if(answers[1]!==null) applySingle('floor', QUESTIONS[1].options[answers[1]]);
-  if(answers[2]&&answers[2].length) applyMulti('climate', answers[2].map(i=>QUESTIONS[2].options[i]));
-  if(answers[5]&&answers[5].length) applyMulti('problem', answers[5].map(i=>QUESTIONS[5].options[i]));
-  if(answers[7]!==null) applySingle('budget', QUESTIONS[7].options[answers[7]]);
-  if(answers[8]&&answers[8].length) applyMulti('brand', answers[8].map(i=>QUESTIONS[8].options[i]));
-  if(answers[9]!==null) applySingle('color', QUESTIONS[9].options[answers[9]]);
-  if(answers[10]!==null) applySingle('thickness', QUESTIONS[10].options[answers[10]]);
-  if(answers[11]!==null) applySingle('priority', QUESTIONS[11].options[answers[11]]);
+  // 인덱스 독립: 모든 질문을 순회하며 scoreKey가 있는 것만 점수 반영
+  QUESTIONS.forEach((q, qi)=>{
+    if(!q.scoreKey || !SCORES[q.scoreKey]) return;
+    const ans = answers[qi];
+    if(ans===null || ans===undefined) return;
+    if(q.type==='single'){
+      applySingle(q.scoreKey, q.options[ans]);
+    } else if(Array.isArray(ans) && ans.length){
+      applyMulti(q.scoreKey, ans.map(i=>q.options[i]));
+    }
+  });
 
   return s.map((v,i)=>{
     const avg = cnt[i]>0 ? (v/cnt[i]) : 0;
@@ -981,14 +1067,13 @@ function showResult(){
       <div class="info-display-title">진단 결과 요약</div>
       <div class="info-display-row"><span class="info-display-key">아파트</span><span class="info-display-val">${infoData.apt||'-'} ${infoData.dong||''}동 ${infoData.ho||''}호</span></div>
       <div class="info-display-row"><span class="info-display-key">연락처</span><span class="info-display-val">${formatPhone(infoData.phone)||'-'}</span></div>
-      <div class="info-display-row"><span class="info-display-key">층 수</span><span class="info-display-val">${answers[1]!==null?QUESTIONS[1].options[answers[1]]:'-'}</span></div>
-      <div class="info-display-row"><span class="info-display-key">교체 시기</span><span class="info-display-val">${answers[13]!==null?QUESTIONS[13].options[answers[13]]:'-'}</span></div>
+      <div class="info-display-row"><span class="info-display-key">층 수</span><span class="info-display-val">${findAnswerLabel('floor')||'-'}</span></div>
+      <div class="info-display-row"><span class="info-display-key">교체 시기</span><span class="info-display-val">${findAnswerByText('교체 시기')||'-'}</span></div>
     </div>
   `;
 
   // 상위 3개 + 동점 처리
   const top3 = scored.slice(0,3);
-  // 동점이면 같은 순위
   const ranks = [];
   top3.forEach((item, i)=>{
     if(i===0){ ranks.push(1); }
@@ -996,11 +1081,17 @@ function showResult(){
     else { ranks.push(i+1); }
   });
 
+  // 전역 저장 (견적 입력/공유용)
+  window._resultTop3 = top3.map((item,i)=>({
+    product: PRODUCTS[item.idx].brand+' '+PRODUCTS[item.idx].name,
+    score: item.score, rank: ranks[i], estimate: ''
+  }));
+
   document.getElementById('rec-cards-wrap').innerHTML = top3.map((item, i)=>{
     const p = PRODUCTS[item.idx];
     const rank = ranks[i];
     return `
-      <div class="rec-card rank-${rank}">
+      <div class="rec-card rank-${rank}" onclick="openEstimateInput(${i})">
         <div class="rec-head rank-${rank}">
           <span class="rec-medal">${RANK_MEDAL[rank-1]}</span>
           <span class="rec-rank-text">${RANK_LABEL[rank-1]}</span>
@@ -1016,6 +1107,8 @@ function showResult(){
       </div>
     `;
   }).join('');
+
+  renderEstimateDisplay();
 
   setTimeout(()=>{
     soundCelebrate();
@@ -1087,45 +1180,87 @@ function launchConfetti(){
   },16);
 }
 
-// ===================== 공유 =====================
-function shareKakao(){
-  if(navigator.vibrate) navigator.vibrate(30);
-  const nameStr = infoData.apt?`${infoData.apt} ${infoData.dong}동 ${infoData.ho}호`:'고객님';
-  const scored = calcScores().sort((a,b)=>b.score-a.score);
-  const top3 = scored.slice(0,3);
-  const ranks = [];
-  top3.forEach((item, i)=>{
-    if(i===0){ ranks.push(1); }
-    else if(item.score === top3[i-1].score){ ranks.push(ranks[i-1]); }
-    else { ranks.push(i+1); }
-  });
-
-  const text = `[㈜아산창호시스템] AI 창호 추천 결과\n\n👤 ${nameStr} 고객님\n\n` +
-    top3.map((item, i)=>{
-      const p = PRODUCTS[item.idx];
-      return `${RANK_MEDAL[ranks[i]-1]} ${RANK_LABEL[ranks[i]-1]}: ${p.brand} ${p.name}\n   점수: ${item.score}점 / 100점`;
-    }).join('\n\n') +
-    `\n\n📞 상담문의: ㈜아산창호시스템\nLX하우시스 · KCC · 현대L&C 공식대리점`;
-
-  if(navigator.share){
-    navigator.share({title:'아산창호시스템 창호 추천 결과', text:text}).catch(()=>fallbackCopy(text));
-  } else {
-    fallbackCopy(text);
+// ===================== 견적 입력 =====================
+function openEstimateInput(idx){
+  if(navigator.vibrate) navigator.vibrate(15);
+  const item = window._resultTop3[idx];
+  const cur = item.estimate || '';
+  const val = prompt(`[${item.product}]\n견적 금액을 입력해 주세요\n(예: 창 3개 약 300만원)`, cur);
+  if(val!==null){
+    window._resultTop3[idx].estimate = val.trim();
+    renderEstimateDisplay();
+    // Firebase에도 견적 반영
+    if(window._savedDocId){
+      try { db.collection(COLLECTION).doc(String(window._savedDocId)).update({top3: window._resultTop3}); } catch(e){}
+    }
   }
 }
 
-function fallbackCopy(text){
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(text).then(()=>alert('결과가 클립보드에 복사되었습니다!\n카카오톡을 열고 붙여넣기 해주세요 😊'));
+function renderEstimateDisplay(){
+  const list = window._resultTop3 || [];
+  const hasAny = list.some(x=>x.estimate);
+  const html = `
+    <div class="est-display">
+      <div class="est-display-title">💰 입력한 견적 안내</div>
+      ${hasAny ? list.filter(x=>x.estimate).map(x=>`
+        <div class="est-row">
+          <span class="est-prod">${RANK_MEDAL[x.rank-1]} ${x.product}</span>
+          <span class="est-price">${x.estimate}</span>
+        </div>
+      `).join('') : '<div class="est-empty">추천 창호를 눌러 견적을 입력하세요</div>'}
+    </div>
+  `;
+  document.getElementById('estimate-display').innerHTML = html;
+}
+
+// ===================== 메시지로 결과 공유 (고객 번호로) =====================
+function buildResultText(){
+  const nameStr = infoData.apt?`${infoData.apt} ${infoData.dong}동 ${infoData.ho}호`:'고객님';
+  const list = window._resultTop3 || [];
+  return `[㈜아산창호시스템] AI 창호 추천 결과\n\n👤 ${nameStr} 고객님\n\n` +
+    list.map(x=>{
+      let line = `${RANK_MEDAL[x.rank-1]} ${RANK_LABEL[x.rank-1]}: ${x.product} (${x.score}점)`;
+      if(x.estimate) line += `\n   💰 견적: ${x.estimate}`;
+      return line;
+    }).join('\n\n') +
+    `\n\n창호 교체를 통한 안락함을 제공하는 것을 최우선으로 합니다.\n📞 1666-4620 ㈜아산창호시스템`;
+}
+
+function shareToCustomer(){
+  if(navigator.vibrate) navigator.vibrate(30);
+  const text = buildResultText();
+  const phone = (infoData.phone||'').replace(/[^0-9]/g,'');
+
+  // 1) 클립보드에 복사
+  copyTextSilent(text);
+
+  // 2) 고객 번호로 문자 메시지창 열기
+  if(phone){
+    const encoded = encodeURIComponent(text);
+    // iOS/안드로이드 SMS 링크
+    const ua = navigator.userAgent.toLowerCase();
+    let smsUrl;
+    if(ua.indexOf('iphone')>=0 || ua.indexOf('ipad')>=0){
+      smsUrl = `sms:${phone}&body=${encoded}`;
+    } else {
+      smsUrl = `sms:${phone}?body=${encoded}`;
+    }
+    showToast('📋 내용이 복사되었습니다');
+    setTimeout(()=>{ location.href = smsUrl; }, 300);
   } else {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    alert('결과가 복사되었습니다!\n카카오톡에 붙여넣기 해주세요 😊');
+    alert('고객 연락처가 없어 메시지를 보낼 수 없습니다.\n(내용은 클립보드에 복사되었습니다)');
   }
+}
+
+function copyTextSilent(text){
+  try {
+    if(navigator.clipboard){ navigator.clipboard.writeText(text); }
+    else {
+      const ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+    }
+  } catch(e){}
 }
 
 // ===================== 이미지로 저장 (모바일 갤러리) =====================
@@ -1169,39 +1304,38 @@ async function saveAsImage(){
 
     canvas.toBlob(async (blob)=>{
       const file = new File([blob], fname, {type:'image/png'});
+      const isMobile = /android|iphone|ipad|ipod/i.test(navigator.userAgent);
 
-      // 1순위: 모바일 파일 공유 (갤러리/사진 앱 저장 가능)
+      // 모바일: 파일 공유 → "이미지 저장 / 사진에 저장" 선택 시 갤러리 저장됨
       let shared = false;
-      if(navigator.canShare && navigator.canShare({files:[file]})){
+      if(isMobile && navigator.canShare && navigator.canShare({files:[file]})){
         try {
-          await navigator.share({
-            files:[file],
-            title:'아산창호시스템 추천 결과'
-          });
+          await navigator.share({ files:[file], title:'아산창호시스템 추천 결과' });
           shared = true;
         } catch(e){
-          // 사용자가 취소한 경우 등
-          if(e && e.name === 'AbortError') shared = true;
+          if(e && e.name === 'AbortError'){ restoreAfterCapture(orig); return; }
         }
       }
 
-      // 2순위: 다운로드 (PC 또는 공유 미지원)
+      // 데스크탑 또는 공유 미지원: 다운로드
       if(!shared){
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
-        a.href = url;
-        a.download = fname;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        a.href = url; a.download = fname;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        // 클립보드 복사도 시도 (PC)
         try {
           if(navigator.clipboard && window.ClipboardItem){
             await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
           }
         } catch(e){}
-        alert('✅ 이미지가 저장되었습니다!\n📁 다운로드 폴더(또는 사진 앱)를 확인하세요.');
+        if(isMobile){
+          alert('✅ 이미지가 저장되었습니다!\n📁 다운로드 폴더 또는 사진 앱(갤러리)을 확인하세요.\n\n공유창이 떴다면 "이미지 저장" 또는 "사진에 저장"을 선택하면 갤러리에 저장됩니다.');
+        } else {
+          alert('✅ 이미지가 저장되었습니다!\n📁 다운로드 폴더를 확인하세요.');
+        }
+      } else {
+        showToast('✅ 이미지 공유 완료');
       }
 
       restoreAfterCapture(orig);
@@ -1245,26 +1379,23 @@ async function saveResponse(top3, ranks){
       phone: formatPhone(infoData.phone||'')
     },
     answers:{
-      floor: answers[1]!==null?QUESTIONS[1].options[answers[1]]:'',
-      climate: answers[2]?answers[2].map(i=>QUESTIONS[2].options[i]).join(', '):'',
-      expansion: answers[3]?answers[3].map(i=>QUESTIONS[3].options[i]).join(', '):'',
-      kids: answers[4]!==null?QUESTIONS[4].options[answers[4]]:'',
-      problem: answers[5]?answers[5].map(i=>QUESTIONS[5].options[i]).join(', '):'',
-      green: answers[6]!==null?QUESTIONS[6].options[answers[6]]:'',
-      budget: answers[7]!==null?QUESTIONS[7].options[answers[7]]:'',
-      brand: answers[8]?answers[8].map(i=>QUESTIONS[8].options[i]).join(', '):'',
-      color: answers[9]!==null?QUESTIONS[9].options[answers[9]]:'',
-      thickness: answers[10]!==null?QUESTIONS[10].options[answers[10]]:'',
-      priority: answers[11]!==null?QUESTIONS[11].options[answers[11]]:'',
-      vendor: answers[12]?answers[12].map(i=>QUESTIONS[12].options[i]).join(', '):'',
-      timing: answers[13]!==null?QUESTIONS[13].options[answers[13]]:''
+      floor: findAnswerLabel('floor'),
+      problem: findAnswerLabel('problem'),
+      budget: findAnswerLabel('budget'),
+      color: findAnswerLabel('color'),
+      thickness: findAnswerLabel('thickness'),
+      priority: findAnswerLabel('priority'),
+      vendor: findAnswerByText('창호업체 선정'),
+      timing: findAnswerByText('교체 시기')
     },
-    top3: top3.map((item,i)=>({
+    top3: (window._resultTop3 || top3.map((item,i)=>({
       product: PRODUCTS[item.idx].brand+' '+PRODUCTS[item.idx].name,
       score: item.score,
-      rank: ranks[i]
-    }))
+      rank: ranks[i],
+      estimate: ''
+    })))
   };
+  window._savedDocId = entry.id; // 견적 추가 입력 시 업데이트용
 
   try {
     if(isOnline){
@@ -1293,6 +1424,8 @@ function openAdmin(){
   document.getElementById('admin-pw-wrap').style.display='block';
   document.getElementById('admin-pw-input').value='';
   adminFilter='all';
+  masterView='list';
+  masterSelectedCode=null;
   setTimeout(()=>document.getElementById('admin-pw-input').focus(),100);
 }
 
@@ -1354,6 +1487,154 @@ function startRealtimeListener(){
     });
 }
 
+let masterView = 'list'; // list | overall | bystaff | staffdetail
+let masterSelectedCode = null;
+
+function setMasterView(v){
+  masterView = v;
+  renderAdminList();
+}
+
+// 통계 계산 헬퍼
+function computeStats(responses){
+  const total = responses.length;
+  const success = responses.filter(r=>r.status==='success').length;
+  const fail = responses.filter(r=>r.status==='fail').length;
+  const pending = responses.filter(r=>!r.status||r.status==='pending').length;
+  const rate = total>0 ? Math.round((success/total)*100) : 0;
+  return {total, success, fail, pending, rate};
+}
+
+// 월별 계약 건수 집계
+function computeMonthly(responses){
+  const months = {};
+  responses.filter(r=>r.status==='success').forEach(r=>{
+    const d = new Date(r.timestamp||r.id);
+    const key = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}`;
+    months[key] = (months[key]||0)+1;
+  });
+  return Object.entries(months).sort((a,b)=>a[0]<b[0]?1:-1).slice(0,6).reverse();
+}
+
+// 전체 통계 뷰
+function renderMasterOverall(){
+  const body = document.getElementById('admin-body');
+  const all = cachedResponses;
+  const st = computeStats(all);
+  const monthly = computeMonthly(all);
+  const maxM = Math.max(1, ...monthly.map(m=>m[1]));
+
+  body.innerHTML = `
+    <div class="master-tabs">
+      <button class="master-tab active">📊 전체 통계</button>
+      <button class="master-tab" onclick="setMasterView('bystaff')">👥 직원별</button>
+      <button class="master-tab" onclick="setMasterView('list')">📋 진단 내역</button>
+    </div>
+    <div class="analytics-card">
+      <div class="analytics-title">🏢 전체 직원 종합 실적</div>
+      <div class="analytics-grid">
+        <div class="analytics-box"><div class="analytics-num">${st.total}</div><div class="analytics-label">총 상담수</div></div>
+        <div class="analytics-box"><div class="analytics-num" style="color:#0E7C5A;">${st.success}</div><div class="analytics-label">계약 완료</div></div>
+        <div class="analytics-box"><div class="analytics-num" style="color:var(--accent-deep);">${st.rate}%</div><div class="analytics-label">계약률</div></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <div class="analytics-box" style="flex:1;"><div class="analytics-num" style="color:#C8102E;font-size:18px;">${st.fail}</div><div class="analytics-label">계약 실패</div></div>
+        <div class="analytics-box" style="flex:1;"><div class="analytics-num" style="color:#B8761C;font-size:18px;">${st.pending}</div><div class="analytics-label">고민 중</div></div>
+      </div>
+    </div>
+    <div class="analytics-card">
+      <div class="analytics-title">📅 월별 계약 건수</div>
+      ${monthly.length? monthly.map(([m,c])=>`
+        <div class="month-bar-row">
+          <span class="month-bar-label">${m}</span>
+          <div class="month-bar-track"><div class="month-bar-fill" style="width:${Math.round(c/maxM*100)}%">${c}건</div></div>
+        </div>`).join('') : '<div class="est-empty">아직 계약 완료 내역이 없습니다</div>'}
+    </div>
+    <div style="display:flex;justify-content:flex-end;"><button class="btn-export" onclick="exportCSV()">📥 전체 엑셀 다운로드</button></div>
+  `;
+}
+
+// 직원별 목록 뷰
+function renderMasterByStaff(){
+  const body = document.getElementById('admin-body');
+  const all = cachedResponses;
+  // 사원별 그룹핑
+  const byStaff = {};
+  all.forEach(r=>{
+    const code = r.staff?r.staff.code:'----';
+    const name = r.staff?r.staff.name:'미상';
+    if(!byStaff[code]) byStaff[code] = {name, code, list:[]};
+    byStaff[code].list.push(r);
+  });
+  const staffArr = Object.values(byStaff).sort((a,b)=>b.list.length-a.list.length);
+
+  body.innerHTML = `
+    <div class="master-tabs">
+      <button class="master-tab" onclick="setMasterView('overall')">📊 전체 통계</button>
+      <button class="master-tab active">👥 직원별</button>
+      <button class="master-tab" onclick="setMasterView('list')">📋 진단 내역</button>
+    </div>
+    <div style="font-size:12px;color:var(--sub-text);margin-bottom:10px;font-weight:600;">👇 직원을 누르면 상세 실적을 볼 수 있어요</div>
+    ${staffArr.length? staffArr.map(s=>{
+      const st = computeStats(s.list);
+      return `<div class="staff-row" onclick="setMasterStaff('${s.code}')">
+        <div>
+          <div class="staff-row-name">${s.name}</div>
+          <div class="staff-row-code">사원코드 ${s.code}</div>
+        </div>
+        <div class="staff-row-stat">
+          상담 <b>${st.total}</b> · 계약 <b style="color:#0E7C5A;">${st.success}</b> · 계약률 <b style="color:var(--accent-deep);">${st.rate}%</b>
+        </div>
+      </div>`;
+    }).join('') : '<div class="admin-empty">데이터가 없습니다</div>'}
+  `;
+}
+
+function setMasterStaff(code){
+  masterSelectedCode = code;
+  masterView = 'staffdetail';
+  renderAdminList();
+}
+
+// 개별 직원 상세 뷰
+function renderStaffDetail(code){
+  const body = document.getElementById('admin-body');
+  const list = cachedResponses.filter(r=>(r.staff?r.staff.code:'----')===code);
+  const name = list.length&&list[0].staff?list[0].staff.name:'미상';
+  const st = computeStats(list);
+  const monthly = computeMonthly(list);
+  const maxM = Math.max(1, ...monthly.map(m=>m[1]));
+
+  body.innerHTML = `
+    <button class="btn-back-master" onclick="setMasterView('bystaff')">← 직원 목록으로</button>
+    <div class="analytics-card">
+      <div class="analytics-title">👤 ${name} (${code}) 실적</div>
+      <div class="analytics-grid">
+        <div class="analytics-box"><div class="analytics-num">${st.total}</div><div class="analytics-label">총 상담수</div></div>
+        <div class="analytics-box"><div class="analytics-num" style="color:#0E7C5A;">${st.success}</div><div class="analytics-label">누적 계약</div></div>
+        <div class="analytics-box"><div class="analytics-num" style="color:var(--accent-deep);">${st.rate}%</div><div class="analytics-label">계약률</div></div>
+      </div>
+    </div>
+    <div class="analytics-card">
+      <div class="analytics-title">📅 ${name} 월별 계약</div>
+      ${monthly.length? monthly.map(([m,c])=>`
+        <div class="month-bar-row">
+          <span class="month-bar-label">${m}</span>
+          <div class="month-bar-track"><div class="month-bar-fill" style="width:${Math.round(c/maxM*100)}%">${c}건</div></div>
+        </div>`).join('') : '<div class="est-empty">계약 완료 내역이 없습니다</div>'}
+    </div>
+    <div style="font-size:12px;color:var(--sub-text);font-weight:700;margin-bottom:8px;">📋 ${name}님 진단 내역 (${list.length}건)</div>
+    ${list.map(r=>`
+      <div class="response-card">
+        <div class="response-top">
+          <div class="response-name" style="cursor:pointer;" onclick="openDetailModal(${r.id})">${r.customer.apt} ${r.customer.dong}동 ${r.customer.ho}호 📋</div>
+          <div class="response-date">${r.date}</div>
+        </div>
+        <div class="response-detail">📞 ${r.customer.phone} · 상태: ${STATUS_INFO[r.status||'pending'].emoji} ${STATUS_INFO[r.status||'pending'].label}</div>
+      </div>`).join('')}
+  `;
+}
+
 function renderAdmin(){
   // 실시간 리스너 시작
   startRealtimeListener();
@@ -1384,7 +1665,21 @@ function renderAdminList(){
     return;
   }
 
-  body.innerHTML = `
+  // 최고관리자 전용 뷰 분기
+  if(currentStaff && currentStaff.isMaster){
+    if(masterView==='overall'){ renderMasterOverall(); return; }
+    if(masterView==='bystaff'){ renderMasterByStaff(); return; }
+    if(masterView==='staffdetail'){ renderStaffDetail(masterSelectedCode); return; }
+  }
+
+  const masterTabs = (currentStaff && currentStaff.isMaster) ? `
+    <div class="master-tabs">
+      <button class="master-tab" onclick="setMasterView('overall')">📊 전체 통계</button>
+      <button class="master-tab" onclick="setMasterView('bystaff')">👥 직원별</button>
+      <button class="master-tab active">📋 진단 내역</button>
+    </div>` : '';
+
+  body.innerHTML = masterTabs + `
     <div style="font-size:11px;color:var(--sub-text);text-align:center;margin-bottom:12px;font-weight:600;">📋 ${scopeLabel} 데이터</div>
     <div class="admin-stats" style="grid-template-columns:1fr 1fr 1fr 1fr;">
       <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-label">전체</div></div>
@@ -1432,6 +1727,7 @@ function renderAdminList(){
           <button class="status-btn st-fail ${(r.status||'pending')==='fail'?'on':''}" onclick="setStatus(${r.id},'fail')">❌ 계약실패</button>
           <button class="status-btn st-pending ${(r.status||'pending')==='pending'?'on':''}" onclick="setStatus(${r.id},'pending')">🤔 고민 중</button>
         </div>
+        <button class="btn-detail" onclick="openDetailModal(${r.id})">📋 설문 전체 내용 보기</button>
       </div>
     `}).join('')}
   `;
@@ -1453,6 +1749,60 @@ async function deleteResponse(id){
     showToast('🗑 삭제 완료');
   } catch(e){ showToast('⚠️ 삭제 실패. 인터넷 확인 필요'); }
 }
+
+// ===================== 설문 상세보기 =====================
+function openDetailModal(id){
+  const r = cachedResponses.find(x=>Number(x.id)===Number(id)||x.id===String(id));
+  if(!r) return;
+  document.getElementById('detail-title').textContent = `${r.customer.apt} ${r.customer.dong}동 ${r.customer.ho}호`;
+  const a = r.answers||{};
+  const rows = [
+    ['담당 사원', `${r.staff?r.staff.name:'미상'} (${r.staff?r.staff.code:'----'})`],
+    ['진단 일시', r.date||'-'],
+    ['연락처', r.customer.phone||'-'],
+    ['── 설문 응답 ──', ''],
+    ['거주 층수', a.floor||'-'],
+    ['해결할 문제', a.problem||'-'],
+    ['성향', a.budget||'-'],
+    ['선호 색상', a.color||'-'],
+    ['프레임 두께', a.thickness||'-'],
+    ['가장 중요한 것', a.priority||'-'],
+    ['업체 선정 기준', a.vendor||'-'],
+    ['교체 시기', a.timing||'-']
+  ];
+  let bodyHtml = rows.map(([k,v])=>{
+    if(v==='' && k.indexOf('──')>=0){
+      return `<div style="font-size:11px;color:var(--accent-deep);font-weight:700;text-align:center;margin:14px 0 8px;letter-spacing:1px;">${k}</div>`;
+    }
+    return `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line-light);font-size:13px;">
+      <span style="color:var(--sub-text);flex-shrink:0;margin-right:12px;">${k}</span>
+      <span style="color:var(--title);font-weight:600;text-align:right;">${v}</span>
+    </div>`;
+  }).join('');
+
+  // 추천 결과 + 견적
+  bodyHtml += `<div style="font-size:11px;color:var(--accent-deep);font-weight:700;text-align:center;margin:16px 0 8px;letter-spacing:1px;">── 추천 결과 & 견적 ──</div>`;
+  bodyHtml += (r.top3||[]).map(t=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line-light);font-size:13px;">
+      <span style="color:var(--title);font-weight:600;">${RANK_MEDAL[(t.rank||1)-1]} ${t.product} <span style="color:var(--sub-text);font-weight:400;">(${t.score}점)</span></span>
+      <span style="color:var(--signature);font-weight:700;">${t.estimate||'견적 미입력'}</span>
+    </div>`).join('');
+
+  // 메모
+  if(r.memo&&(r.memo.estimate||r.memo.feature)){
+    bodyHtml += `<div style="background:#FFFBF0;border:1px solid var(--accent);border-radius:10px;padding:12px;margin-top:14px;font-size:12px;color:#5B4A00;line-height:1.7;">`;
+    if(r.memo.estimate) bodyHtml += `<div>💰 <strong>견적안내:</strong> ${r.memo.estimate}</div>`;
+    if(r.memo.feature) bodyHtml += `<div>📝 <strong>고객특징:</strong> ${r.memo.feature}</div>`;
+    bodyHtml += `</div>`;
+  }
+
+  document.getElementById('detail-body').innerHTML = bodyHtml;
+  document.getElementById('detail-modal').style.display='flex';
+}
+function closeDetailModal(){
+  document.getElementById('detail-modal').style.display='none';
+}
+
 
 // ===================== 견적/고객특징 메모 저장 =====================
 async function saveMemo(id, estimate, feature){
@@ -1491,17 +1841,19 @@ function submitMemo(){
 function exportCSV(){
   const responses = getVisibleResponses(); // Firebase 실시간 캐시
   const statusKor = {success:'계약완료', fail:'계약실패', pending:'고민중'};
-  const rows = [['날짜','담당사원','사원코드','계약상태','아파트명','동','호','연락처','층수','우리집특징','확장구조','자녀/반려동물','주요문제','그린리모델링','성향','선호브랜드','선호색상','프레임두께','최우선요소','업체선정기준','교체시기','1순위제품','1순위점수','2순위제품','2순위점수','3순위제품','3순위점수']];
+  const rows = [['날짜','담당사원','사원코드','계약상태','아파트명','동','호','연락처','층수','주요문제','성향','선호색상','프레임두께','최우선요소','업체선정기준','교체시기','견적안내','고객특징','1순위제품','1순위점수','1순위견적','2순위제품','2순위점수','2순위견적','3순위제품','3순위점수','3순위견적']];
   responses.forEach(r=>{
+    const a = r.answers||{};
+    const m = r.memo||{};
+    const t = r.top3||[];
     rows.push([
       r.date, r.staff?r.staff.name:'미상', r.staff?r.staff.code:'----', statusKor[r.status||'pending'],
       r.customer.apt,r.customer.dong,r.customer.ho,r.customer.phone,
-      r.answers.floor,r.answers.climate,r.answers.expansion,r.answers.kids,
-      r.answers.problem,r.answers.green,r.answers.budget,r.answers.brand,r.answers.color,
-      r.answers.thickness,r.answers.priority,r.answers.vendor,r.answers.timing,
-      r.top3[0]?.product||'',r.top3[0]?.score||'',
-      r.top3[1]?.product||'',r.top3[1]?.score||'',
-      r.top3[2]?.product||'',r.top3[2]?.score||''
+      a.floor||'',a.problem||'',a.budget||'',a.color||'',a.thickness||'',a.priority||'',a.vendor||'',a.timing||'',
+      m.estimate||'', m.feature||'',
+      t[0]?.product||'',t[0]?.score||'',t[0]?.estimate||'',
+      t[1]?.product||'',t[1]?.score||'',t[1]?.estimate||'',
+      t[2]?.product||'',t[2]?.score||'',t[2]?.estimate||''
     ]);
   });
   const csv = '\uFEFF'+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
