@@ -433,7 +433,7 @@ canvas#confetti-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointe
 <div class="result-page" id="result-page">
   <canvas id="confetti-canvas"></canvas>
   <div id="capture-area">
-  <div class="capture-header">
+  <div class="capture-header" id="capture-header" style="display:none;">
     <img class="logo-img" src="" id="capture-logo" alt="아산창호시스템" style="height:18px;">
     <span style="color:#fff;font-size:11px;font-weight:600;opacity:0.85;">AI 창호 추천 결과</span>
   </div>
@@ -637,14 +637,7 @@ function isValidStaffCode(code){
   return /^\d{4}$/.test(code) && n >= 1 && n <= 30;
 }
 
-function doLogin(){
-  const name = document.getElementById('login-name').value.trim();
-  const code = document.getElementById('login-code').value.trim();
-  if(!name){ alert('사원 이름을 입력해 주세요.'); return; }
-  if(!isValidStaffCode(code)){
-    alert('올바른 사원 코드가 아닙니다.\n( 0001 ~ 0030 또는 관리자 코드 )');
-    return;
-  }
+function applyStaffLogin(name, code){
   currentStaff = { name: name, code: code, isMaster: (code === STAFF_MASTER_CODE) };
   // 화면 전환
   document.getElementById('login-page').style.display = 'none';
@@ -654,19 +647,48 @@ function doLogin(){
   badge.textContent = currentStaff.isMaster ? '👑 ' + name + ' (관리자)' : '👤 ' + name + ' (' + code + ')';
   badge.style.display = 'block';
   setAdminBtnVisible(true);
+}
+
+function doLogin(){
+  const name = document.getElementById('login-name').value.trim();
+  const code = document.getElementById('login-code').value.trim();
+  if(!name){ alert('사원 이름을 입력해 주세요.'); return; }
+  if(!isValidStaffCode(code)){
+    alert('올바른 사원 코드가 아닙니다.\n( 0001 ~ 0030 또는 관리자 코드 )');
+    return;
+  }
+  // 자동 로그인을 위해 기기에 저장 (다음부터 바로 로그인)
+  try { localStorage.setItem('asan_staff', JSON.stringify({name, code})); } catch(e){}
+  applyStaffLogin(name, code);
   if(navigator.vibrate) navigator.vibrate(30);
   soundTransition();
 }
 
+// 기기에 저장된 로그인 정보로 자동 로그인 (지문 대신 간편 로그인)
+function tryAutoLogin(){
+  try {
+    const saved = JSON.parse(localStorage.getItem('asan_staff')||'null');
+    if(saved && saved.name && isValidStaffCode(saved.code)){
+      applyStaffLogin(saved.name, saved.code);
+      return true;
+    }
+  } catch(e){}
+  return false;
+}
+
 function logout(){
+  // 자동 로그인 정보 삭제
+  try { localStorage.removeItem('asan_staff'); } catch(e){}
   currentStaff = null;
   document.getElementById('staff-badge').style.display = 'none';
   document.getElementById('intro-page').style.display = 'none';
   document.getElementById('result-page').style.display = 'none';
   document.getElementById('quiz-page').style.display = 'none';
+  document.getElementById('admin-page').style.display = 'none';
   document.getElementById('login-page').style.display = 'block';
   document.getElementById('login-name').value = '';
   document.getElementById('login-code').value = '';
+  setAdminBtnVisible(false);
 }
 
 
@@ -1373,6 +1395,9 @@ async function saveAsImage(){
       onclone: function(clonedDoc){
         const cc = clonedDoc.getElementById('confetti-canvas');
         if(cc) cc.style.display = 'none';
+        // 캡처 이미지에만 로고 헤더 표시 (실제 화면에는 안 보임)
+        const ch = clonedDoc.getElementById('capture-header');
+        if(ch) ch.style.display = 'flex';
       }
     });
 
@@ -2046,13 +2071,20 @@ function restartQuiz(){
 // 시작 시 관리자 버튼 숨김 (로그인 화면)
 setAdminBtnVisible(false);
 
-// 현재 화면 상태 추적
+// 저장된 로그인 정보가 있으면 자동 로그인 (간편 로그인)
+tryAutoLogin();
+
+// 현재 화면 상태 추적 (실제 보이는지로 판단)
+function isVisible(id){
+  const el = document.getElementById(id);
+  if(!el) return false;
+  return getComputedStyle(el).display !== 'none';
+}
 function getCurrentScreen(){
-  if(document.getElementById('login-page').style.display!=='none' &&
-     getComputedStyle(document.getElementById('login-page')).display!=='none') return 'login';
-  if(document.getElementById('result-page').style.display==='block') return 'result';
-  if(document.getElementById('quiz-page').style.display==='block') return 'quiz';
-  if(document.getElementById('intro-page').style.display==='block') return 'intro';
+  if(isVisible('result-page')) return 'result';
+  if(isVisible('quiz-page')) return 'quiz';
+  if(isVisible('intro-page')) return 'intro';
+  if(isVisible('login-page')) return 'login';
   return 'login';
 }
 
@@ -2063,22 +2095,22 @@ window.addEventListener('popstate', function(e){
   // 다시 히스토리를 채워서 앱이 닫히지 않게 함
   history.pushState({screen:'app'}, '');
 
-  // 모달이 열려있으면 모달부터 닫기
+  // 1) 모달이 열려있으면 모달부터 닫기
   const estModal = document.getElementById('estimate-modal');
   const detailModal = document.getElementById('detail-modal');
   const memoModal = document.getElementById('memo-modal');
-  if(estModal && estModal.style.display==='flex'){ closeEstimateModal(); return; }
-  if(detailModal && detailModal.style.display==='flex'){ closeDetailModal(); return; }
-  if(memoModal && memoModal.style.display==='flex'){ closeMemoModal(); return; }
+  if(estModal && getComputedStyle(estModal).display==='flex'){ closeEstimateModal(); return; }
+  if(detailModal && getComputedStyle(detailModal).display==='flex'){ closeDetailModal(); return; }
+  if(memoModal && getComputedStyle(memoModal).display==='flex'){ closeMemoModal(); return; }
 
-  // 관리자 페이지가 열려있으면 닫기
+  // 2) 관리자 페이지가 열려있으면 닫기
   const adminPage = document.getElementById('admin-page');
-  if(adminPage && adminPage.style.display==='block'){ closeAdmin(); return; }
+  if(adminPage && getComputedStyle(adminPage).display!=='none'){ closeAdmin(); return; }
 
-  // 화면별 뒤로가기 동작
+  // 3) 화면별 뒤로가기 동작 (직전 페이지로)
   const screen = getCurrentScreen();
   if(screen==='quiz'){
-    // 설문 중: 이전 질문으로 (첫 질문이면 인트로로)
+    // 설문 중: 이전 질문으로, 첫 질문이면 인트로로
     if(current > 0){
       goBack();
     } else {
@@ -2088,11 +2120,11 @@ window.addEventListener('popstate', function(e){
       window.scrollTo(0,0);
     }
   } else if(screen==='result'){
-    // 결과: 인트로로
-    restartQuiz();
+    // 결과 화면: 설문 마지막 질문으로 돌아가서 수정 가능
+    backToQuiz();
   } else if(screen==='intro'){
-    // 인트로: 그냥 머무름 (로그아웃 방지). 살짝 안내
-    showToast && showToast('홈 화면입니다');
+    // 인트로(홈): 머무름 (로그아웃 안 함)
+    if(typeof showToast==='function') showToast('홈 화면입니다');
   }
   // login 화면에서는 아무 동작 안 함 (로그아웃 방지)
 });
